@@ -1,0 +1,3110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ww生词本</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body-solid: #f5f8fd;
+            --bg-card: #ffffff;
+            --bg-card-soft: #f9fbfe;
+            --bg-panel: #f4f7fc;
+            --bg-input: #ffffff;
+            --bg-hover: #f0f4fc;
+            --border-soft: #e3eaf3;
+            --border-input: #dbe4f0;
+            --border-strong: #d4e0ee;
+            --text-primary: #1b2e4b;
+            --text-secondary: #526b8c;
+            --text-muted: #7b8fa8;
+            --text-faint: #a5b9d4;
+            --text-placeholder: #a5b9d4;
+            --accent: #6c8bc7;
+            --accent-hover: #5a79b3;
+            --accent-soft: #eef4fd;
+            --accent-soft-hover: #dae6f7;
+            --accent-text: #3b6fc4;
+            --danger: #c93a3a;
+            --danger-soft: #fdeaea;
+            --danger-soft-hover: #ffdada;
+            --danger-border: #ffcdcd;
+            --danger-deep: #8b1a1a;
+            --success: #1e9e4a;
+            --success-soft: #e6f7ec;
+            --success-border: #b5e6c5;
+            --warning: #d18b1e;
+            --warning-soft: #fdf3e0;
+            --shadow-card: 0 4px 14px -6px rgba(31,45,70,0.1);
+            --shadow-card-hover: 0 12px 28px -10px rgba(31,45,70,0.22);
+            --shadow-modal: 0 25px 50px -12px rgba(20,35,60,0.3);
+            --shadow-toast: 0 12px 24px -8px rgba(20,35,60,0.4);
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.75);
+            --glass-inset: rgba(255, 255, 255, 0.4);
+            --glass-inset-top: rgba(255, 255, 255, 0.9);
+            --scrollbar-thumb: #b8cae0;
+            --modal-mask: rgba(20, 35, 60, 0.4);
+            --sidebar-bg: #ffffff;
+            --topbar-bg: #ffffff;
+        }
+        [data-theme="dark"] {
+            --bg-body-solid: #0f1724;
+            --bg-card: #1a2433;
+            --bg-card-soft: #1e2a3c;
+            --bg-panel: #17202e;
+            --bg-input: #1e2a3c;
+            --bg-hover: #24324a;
+            --border-soft: #2a3648;
+            --border-input: #2f3e54;
+            --border-strong: #364460;
+            --text-primary: #e6edf7;
+            --text-secondary: #a8b8d0;
+            --text-muted: #7e90a8;
+            --text-faint: #566275;
+            --text-placeholder: #566275;
+            --accent: #7ea3e0;
+            --accent-hover: #94b3ea;
+            --accent-soft: #1e2c44;
+            --accent-soft-hover: #263653;
+            --accent-text: #8fb4e8;
+            --danger: #ff8080;
+            --danger-soft: #2e1a1e;
+            --danger-soft-hover: #3a2024;
+            --danger-border: #4a262a;
+            --danger-deep: #ff5757;
+            --success: #4ad27d;
+            --success-soft: #14301f;
+            --success-border: #1f4a30;
+            --warning: #e8b44a;
+            --warning-soft: #2e2416;
+            --shadow-card: 0 4px 14px -6px rgba(0,0,0,0.4);
+            --shadow-card-hover: 0 12px 28px -10px rgba(0,0,0,0.6);
+            --shadow-modal: 0 25px 50px -12px rgba(0,0,0,0.7);
+            --shadow-toast: 0 12px 24px -8px rgba(0,0,0,0.6);
+            --glass-bg: rgba(30, 42, 60, 0.65);
+            --glass-border: rgba(120, 150, 200, 0.2);
+            --glass-inset: rgba(255, 255, 255, 0.08);
+            --glass-inset-top: rgba(255, 255, 255, 0.12);
+            --scrollbar-thumb: #3a4a63;
+            --modal-mask: rgba(0, 0, 0, 0.6);
+            --sidebar-bg: #131c2c;
+            --topbar-bg: #131c2c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-body-solid);
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        button { font-family: 'Nunito', sans-serif; }
+
+        .theme-toggle {
+            position: fixed; top: 1.2rem; right: 1.2rem; z-index: 900;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--bg-card); border: 1.5px solid var(--border-soft);
+            color: var(--text-primary); font-size: 1.1rem; cursor: pointer;
+            box-shadow: var(--shadow-card);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .theme-toggle:hover { background: var(--bg-hover); transform: translateY(-2px) rotate(15deg); }
+
+        .toast {
+            position: fixed; top: 1.2rem; left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #1f334b; color: white; padding: 0.7rem 1.3rem;
+            border-radius: 100px; font-size: 0.9rem; font-weight: 600;
+            box-shadow: var(--shadow-toast); opacity: 0; pointer-events: none;
+            transition: all 0.25s ease; z-index: 9999; white-space: nowrap;
+            max-width: 90vw; overflow: hidden; text-overflow: ellipsis;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #1e9e4a; }
+        .toast.error { background: #c93a3a; }
+        .toast.warn { background: #d18b1e; }
+
+        /* 设备选择页 */
+        .device-page {
+            position: fixed; inset: 0; z-index: 8000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1.5rem;
+            background: var(--bg-body-solid);
+            overflow-y: auto;
+        }
+        .device-page.hide { display: none; }
+
+        .device-bg-deco { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+        .device-bg-deco::before, .device-bg-deco::after {
+            content: ''; position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.5;
+        }
+        .device-bg-deco::before { width: 400px; height: 400px; background: var(--accent); top: -100px; left: -100px; }
+        .device-bg-deco::after { width: 500px; height: 500px; background: #a7c1e8; bottom: -150px; right: -150px; }
+        [data-theme="dark"] .device-bg-deco::before { opacity: 0.25; }
+        [data-theme="dark"] .device-bg-deco::after { opacity: 0.15; }
+
+        .device-card {
+            background: var(--bg-card);
+            border-radius: 2rem;
+            padding: 2.5rem 2rem 2rem;
+            max-width: 620px; width: 100%;
+            box-shadow: var(--shadow-modal), 0 0 0 1px var(--border-soft) inset;
+            text-align: center;
+            animation: authIn 0.4s ease;
+        }
+        @keyframes authIn { from { opacity: 0; transform: translateY(12px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .device-logo { font-size: 3rem; margin-bottom: 0.5rem; }
+        .device-title { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.4rem; }
+        .device-sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2rem; }
+
+        .device-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 520px) { .device-options { grid-template-columns: 1fr; } }
+
+        .device-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 1.8rem 1.2rem 1.5rem;
+            border-radius: 1.4rem;
+            border: 2px solid var(--border-soft);
+            background: var(--bg-card-soft);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-family: 'Nunito', sans-serif;
+        }
+        .device-option:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -12px rgba(108,139,199,0.5);
+        }
+        .device-option .do-icon { font-size: 3rem; line-height: 1; }
+        .device-option .do-title { font-size: 1.1rem; font-weight: 800; color: var(--text-primary); }
+        .device-option .do-desc { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; line-height: 1.4; }
+
+        .device-tip {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+
+        /* 登录 / 注册页 */
+        .auth-page {
+            position: fixed; inset: 0; z-index: 5000;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem; background: var(--bg-body-solid); overflow-y: auto;
+        }
+        .auth-page.hide { display: none; }
+
+        .auth-bg-deco { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+        .auth-bg-deco::before, .auth-bg-deco::after {
+            content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+        }
+        .auth-bg-deco::before { width: 400px; height: 400px; background: var(--accent); top: -100px; left: -100px; }
+        .auth-bg-deco::after { width: 500px; height: 500px; background: #a7c1e8; bottom: -150px; right: -150px; }
+        [data-theme="dark"] .auth-bg-deco::before { opacity: 0.25; }
+        [data-theme="dark"] .auth-bg-deco::after { opacity: 0.15; }
+
+        .auth-card {
+            background: var(--bg-card); border-radius: 2rem;
+            padding: 2.2rem 2rem 1.8rem; max-width: 420px; width: 100%;
+            box-shadow: var(--shadow-modal), 0 0 0 1px var(--border-soft) inset;
+            animation: authIn 0.35s ease;
+        }
+
+        .auth-logo { text-align: center; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .auth-title { text-align: center; font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.4rem; }
+        .auth-sub { text-align: center; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1.6rem; }
+
+        .auth-tabs { display: flex; background: var(--bg-panel); border-radius: 100px; padding: 0.3rem; margin-bottom: 1.5rem; }
+        .auth-tab {
+            flex: 1; text-align: center; padding: 0.6rem 0.5rem; border-radius: 100px;
+            font-size: 0.9rem; font-weight: 800; color: var(--text-muted);
+            cursor: pointer; border: none; background: transparent;
+        }
+        .auth-tab.active { background: var(--accent); color: white; }
+
+        .auth-field { position: relative; margin-bottom: 0.9rem; }
+        .auth-field input {
+            width: 100%; background: var(--bg-input);
+            border: 1.5px solid var(--border-input); border-radius: 0.9rem;
+            padding: 0.85rem 3.2rem 0.85rem 1.1rem; font-size: 0.95rem;
+            font-weight: 500; color: var(--text-primary);
+            outline: none;
+        }
+        .auth-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .auth-field input::placeholder { color: var(--text-placeholder); }
+
+        .field-check { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.1rem; font-weight: 800; color: var(--success); display: none; }
+        .field-check.show { display: block; }
+
+        .pw-toggle {
+            position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%);
+            background: transparent; border: none; color: var(--text-muted);
+            font-size: 1rem; cursor: pointer; padding: 0.3rem 0.5rem; border-radius: 40px; display: none;
+        }
+        .pw-toggle.show { display: block; }
+
+        .auth-hint { font-size: 0.75rem; font-weight: 600; margin-top: -0.4rem; margin-bottom: 0.8rem; padding-left: 1rem; min-height: 1rem; }
+        .auth-hint.weak { color: var(--danger); }
+        .auth-hint.info { color: var(--text-muted); }
+        .auth-hint.ok { color: var(--success); }
+
+        .auth-submit {
+            width: 100%; background: var(--accent); color: white; border: none;
+            font-weight: 800; padding: 0.9rem 1rem; border-radius: 100px;
+            font-size: 1rem; cursor: pointer; margin-top: 0.6rem;
+        }
+        .auth-submit:hover { background: var(--accent-hover); }
+        .auth-submit:disabled { background: var(--border-strong); cursor: not-allowed; }
+
+        .auth-switch-tip { text-align: center; font-size: 0.82rem; color: var(--text-muted); font-weight: 600; margin-top: 1.2rem; }
+        .auth-switch-tip a { color: var(--accent-text); font-weight: 800; cursor: pointer; text-decoration: none; margin-left: 0.3rem; }
+
+        .back-to-device {
+            position: fixed; top: 1rem; left: 1rem;
+            background: var(--bg-card); border: 1.5px solid var(--border-soft);
+            color: var(--text-muted); font-size: 0.8rem; font-weight: 700;
+            padding: 0.4rem 0.9rem; border-radius: 100px; cursor: pointer;
+            z-index: 5500; display: none;
+        }
+        .back-to-device.show { display: flex; align-items: center; gap: 0.3rem; }
+        .back-to-device:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+        .error-popup-mask { position: fixed; inset: 0; background: var(--modal-mask); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 6000; padding: 1rem; }
+        .error-popup-mask.show { display: flex; }
+        .error-popup {
+            background: var(--bg-card); border-radius: 1.6rem;
+            padding: 2rem 2rem 1.6rem; max-width: 340px; width: 100%; text-align: center;
+            box-shadow: var(--shadow-modal); animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+        .error-popup .ep-emoji { font-size: 3rem; display: block; margin-bottom: 0.6rem; animation: shake 0.6s ease; }
+        @keyframes shake { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-10deg); } 40% { transform: rotate(10deg); } 60% { transform: rotate(-8deg); } 80% { transform: rotate(8deg); } }
+        .error-popup .ep-msg { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1.2rem; }
+        .error-popup .ep-sub { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1.2rem; }
+        .error-popup .ep-btn { background: var(--accent); color: white; border: none; font-weight: 800; padding: 0.7rem 2rem; border-radius: 100px; font-size: 0.95rem; cursor: pointer; }
+
+        /* 主页 */
+        .page { display: none; min-height: 100vh; }
+        .page.active { display: block; }
+
+        .home-body { display: grid; grid-template-columns: 300px 1fr; min-height: 100vh; }
+
+        .sidebar {
+            background: var(--sidebar-bg); border-right: 1px solid var(--border-soft);
+            padding: 1.6rem 1.2rem; display: flex; flex-direction: column; gap: 1rem;
+            position: sticky; top: 0; height: 100vh; overflow-y: auto;
+        }
+        .sidebar h1 { font-size: 1.25rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar h1 .sub { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); background: var(--accent-soft); padding: 0.15rem 0.5rem; border-radius: 40px; margin-left: auto; }
+
+        .user-bar { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.8rem; background: var(--bg-card-soft); border: 1px solid var(--border-soft); border-radius: 0.9rem; cursor: pointer; }
+        .user-bar:hover { background: var(--bg-hover); border-color: var(--accent); }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #a7c1e8 100%); color: white; font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; position: relative; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-bar:hover .user-avatar::after { content: '📷'; position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .user-info { flex: 1; min-width: 0; }
+        .user-name { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-status { font-size: 0.68rem; color: var(--success); font-weight: 700; }
+        .logout-btn { background: transparent; border: 1.5px solid var(--border-soft); color: var(--text-muted); font-weight: 700; font-size: 0.72rem; padding: 0.35rem 0.7rem; border-radius: 100px; cursor: pointer; white-space: nowrap; }
+        .logout-btn:hover { background: var(--danger-soft); border-color: var(--danger-border); color: var(--danger); }
+
+        .stats-panel {
+            background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-card-soft) 100%);
+            border-radius: 1.2rem; padding: 0.9rem 1rem; border: 1px solid var(--border-soft);
+        }
+        .stats-panel-title {
+            font-size: 0.72rem; font-weight: 800; color: var(--accent-text);
+            text-transform: uppercase; letter-spacing: 0.6px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .stats-panel-title .streak { background: var(--warning-soft); color: var(--warning); padding: 0.1rem 0.5rem; border-radius: 40px; font-size: 0.68rem; font-weight: 800; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+        .stat-item { background: var(--bg-card); padding: 0.5rem 0.7rem; border-radius: 0.7rem; box-shadow: 0 2px 6px -3px rgba(31,45,70,0.12); }
+        .stat-item .stat-label { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .stat-item .stat-value { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+        .stat-item .stat-value.small { font-size: 0.9rem; }
+        .stat-item .stat-value.green { color: var(--success); }
+        .stat-item .stat-value.orange { color: var(--warning); }
+        .stat-item .stat-value.blue { color: var(--accent-text); }
+
+        .add-panel { background: var(--bg-card-soft); border-radius: 1.2rem; padding: 1rem; border: 1px solid var(--border-soft); }
+        .add-panel .panel-title { font-size: 0.75rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 0.7rem; }
+        .add-field { background: var(--bg-input); border-radius: 0.8rem; padding: 0.5rem 0.9rem; margin-bottom: 0.5rem; box-shadow: 0 0 0 1px var(--border-input) inset; display: flex; align-items: center; gap: 0.4rem; }
+        .add-field:focus-within { box-shadow: 0 0 0 2px var(--accent) inset; }
+        .add-field.error { box-shadow: 0 0 0 2px #e57373 inset; }
+        .add-field input { flex: 1; border: none; padding: 0.55rem 0; font-size: 0.92rem; font-weight: 500; color: var(--text-primary); background: transparent; outline: none; min-width: 0; }
+        .add-field input::placeholder { color: var(--text-placeholder); }
+
+        .add-btns { display: flex; gap: 0.5rem; margin-top: 0.7rem; }
+        .btn-add { flex: 1; background: var(--accent); border: none; color: white; font-weight: 700; padding: 0.7rem 0.8rem; border-radius: 100px; font-size: 0.9rem; cursor: pointer; }
+        .btn-add:hover { background: var(--accent-hover); }
+        .btn-add:disabled { background: var(--border-strong); cursor: not-allowed; }
+        .btn-clear { background: var(--bg-input); border: 1.5px solid var(--border-soft); color: var(--text-secondary); font-weight: 700; padding: 0.7rem 0.9rem; border-radius: 100px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+
+        .folder-block { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-height: 0; }
+        .folder-block-title { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; padding: 0.3rem 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .folder-block-title .badge { background: var(--accent-soft); color: var(--accent-text); padding: 0.15rem 0.55rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; }
+
+        .date-list { display: flex; flex-direction: column; gap: 0.3rem; overflow-y: auto; padding-right: 0.2rem; flex: 1; min-height: 0; }
+        .date-item { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 0.85rem; cursor: pointer; font-weight: 600; font-size: 0.88rem; color: var(--text-secondary); border: 1.5px solid transparent; gap: 0.5rem; }
+        .date-item:hover { background: var(--bg-hover); }
+        .date-item.active { background: var(--accent); color: white; }
+        .date-item .info { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+        .date-item .info .main { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .date-item .info .sub { font-size: 0.68rem; font-weight: 500; opacity: 0.75; }
+        .date-item .count { font-size: 0.7rem; background: rgba(0,0,0,0.08); padding: 0.15rem 0.5rem; border-radius: 40px; font-weight: 700; flex-shrink: 0; }
+        [data-theme="dark"] .date-item .count { background: rgba(255,255,255,0.1); }
+        .date-item.active .count { background: rgba(255,255,255,0.25); }
+
+        .wrongbook-entry { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0.9rem; border-radius: 0.9rem; cursor: pointer; background: var(--danger-soft); border: 1.5px solid var(--danger-border); color: var(--danger); font-weight: 800; font-size: 0.9rem; }
+        .wrongbook-entry:hover { background: var(--danger-soft-hover); }
+        .wrongbook-entry .wb-left { display: flex; align-items: center; gap: 0.5rem; }
+        .wrongbook-entry .wb-count { background: var(--danger); color: white; font-size: 0.7rem; padding: 0.15rem 0.55rem; border-radius: 40px; font-weight: 800; }
+
+        .sidebar-foot { border-top: 1px solid var(--border-soft); padding-top: 0.9rem; font-size: 0.72rem; color: var(--text-muted); text-align: center; font-weight: 500; }
+
+        .home-content { padding: 2rem 2rem 3rem; min-width: 0; }
+        .content-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.8rem; }
+        .content-header h2 { font-size: 1.7rem; font-weight: 800; color: var(--text-primary); }
+        .content-header .content-sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-top: 0.3rem; }
+        .content-header .toolbar { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+        .toolbar-btn { background: var(--bg-card); border: 1.5px solid var(--border-strong); color: var(--text-secondary); padding: 0.55rem 1.1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+        .toolbar-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+        .toolbar-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+        .toolbar-btn.primary:hover { background: var(--accent-hover); }
+        .toolbar-btn.danger:hover { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+
+        .search-wrap { position: relative; margin-bottom: 1.2rem; }
+        .search-wrap input { width: 100%; border: 1.5px solid var(--border-input); border-radius: 100px; padding: 0.8rem 1.2rem 0.8rem 2.8rem; font-size: 0.95rem; color: var(--text-primary); background: var(--bg-input); outline: none; }
+        .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 6px 18px -8px rgba(108,139,199,0.4); }
+        .search-wrap input::placeholder { color: var(--text-placeholder); }
+        .search-wrap .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 1.05rem; pointer-events: none; }
+        .search-wrap .search-clear { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 1rem; cursor: pointer; background: transparent; border: none; padding: 0.2rem 0.5rem; border-radius: 40px; display: none; }
+        .search-wrap.has-text .search-clear { display: block; }
+
+        .global-search-hint { display: none; margin-bottom: 1rem; padding: 0.6rem 1rem; background: var(--accent-soft); border-radius: 100px; font-size: 0.85rem; font-weight: 600; color: var(--accent-text); align-items: center; gap: 0.5rem; }
+        .global-search-hint.show { display: flex; }
+        .global-search-hint .hint-tag { background: var(--accent); color: white; font-size: 0.7rem; padding: 0.15rem 0.55rem; border-radius: 40px; font-weight: 800; }
+
+        .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+        @media (max-width: 1200px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .big-card {
+            background: var(--bg-card); border-radius: 1.4rem;
+            padding: 1.3rem 1.3rem 1.2rem;
+            box-shadow: var(--shadow-card), 0 0 0 1px var(--border-soft) inset;
+            display: flex; flex-direction: column; position: relative;
+        }
+        .big-card:hover { box-shadow: var(--shadow-card-hover), 0 0 0 1px var(--border-strong) inset; transform: translateY(-2px); }
+
+        .card-date-tag { position: absolute; top: 0.7rem; right: 0.8rem; font-size: 0.68rem; font-weight: 800; color: var(--accent-text); background: var(--accent-soft); padding: 0.2rem 0.55rem; border-radius: 40px; }
+        .card-date-tag.today { background: #dcf1e3; color: #1e9e4a; }
+        [data-theme="dark"] .card-date-tag.today { background: #14301f; color: #4ad27d; }
+
+        .word-hover-trigger { font-size: 1.35rem; font-weight: 800; color: var(--text-primary); line-height: 1.25; word-break: break-word; display: inline-block; position: relative; cursor: help; padding-right: 4rem; }
+        .word-hover-trigger:hover { color: var(--accent-text); }
+        .word-hover-trigger.deep-red { color: var(--danger-deep); }
+        .word-hover-trigger.deep-red:hover { color: #ff7070; }
+
+        .word-with-audio { display: flex; align-items: flex-start; gap: 0.4rem; margin-bottom: 0.5rem; }
+        .word-with-audio .word-hover-trigger { margin-bottom: 0; }
+
+        .audio-btn { background: var(--accent-soft); border: none; color: var(--accent-text); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; padding: 0; }
+        .audio-btn:hover { background: var(--accent); color: white; }
+        .audio-btn:active { transform: scale(0.95); }
+
+        .big-card .card-cn { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; line-height: 1.5; word-break: break-word; margin-bottom: 0.8rem; flex: 1; }
+        .big-card .card-cn.empty { color: var(--text-faint); font-style: italic; }
+
+        .wrong-marks { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 0.7rem; padding: 0.5rem 0.6rem; background: var(--danger-soft); border-radius: 0.7rem; border: 1px dashed var(--danger-border); align-items: center; min-height: 2rem; }
+        .wrong-marks .marks-label { font-size: 0.7rem; font-weight: 800; color: var(--danger); margin-right: 0.2rem; }
+        .wrong-marks .mark { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 20px; border-radius: 40px; background: var(--danger-soft-hover); color: var(--danger); font-size: 0.72rem; font-weight: 800; border: 1px solid var(--danger-border); }
+        .wrong-marks .mark.deep { background: var(--danger-deep); color: #ffe0e0; border-color: var(--danger-deep); }
+
+        .big-card .card-actions { display: flex; gap: 0.4rem; margin-top: auto; padding-top: 0.7rem; border-top: 1px dashed var(--border-soft); }
+        .big-card .mini-btn { flex: 1; background: var(--accent-soft); border: none; color: var(--accent-text); font-size: 0.78rem; font-weight: 700; padding: 0.45rem 0.6rem; border-radius: 100px; cursor: pointer; white-space: nowrap; }
+        .big-card .mini-btn:hover { background: var(--accent-soft-hover); }
+        .big-card .mini-btn.open { background: var(--accent); color: white; }
+        .big-card .mini-btn.del { flex: 0 0 auto; background: transparent; color: var(--text-faint); padding: 0.45rem 0.7rem; }
+        .big-card .mini-btn.del:hover { background: var(--danger-soft); color: var(--danger); }
+        .big-card .dot { display: inline-block; width: 5px; height: 5px; background: #e57373; border-radius: 50%; margin-left: 0.3rem; vertical-align: middle; }
+
+        .ext-panel { margin-top: 0.8rem; padding: 0.9rem 1rem; border-radius: 1rem; background: var(--bg-card-soft); border: 1px dashed var(--border-input); }
+        .ext-section { margin-bottom: 0.75rem; }
+        .ext-section:last-child { margin-bottom: 0; }
+        .ext-label { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; font-size: 0.72rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 0.35rem; }
+        .ext-value { font-size: 0.88rem; color: var(--text-primary); font-weight: 500; line-height: 1.5; word-break: break-word; background: var(--bg-input); padding: 0.55rem 0.8rem; border-radius: 0.7rem; box-shadow: 0 0 0 1px var(--border-soft) inset; min-height: 2.1rem; white-space: pre-wrap; }
+        .ext-value.placeholder { color: var(--text-faint); font-style: italic; }
+        .ext-value.example { font-style: italic; color: var(--text-secondary); border-left: 3px solid var(--accent); padding-left: 0.8rem; background: transparent; box-shadow: none; border-radius: 0; white-space: normal; }
+
+        .ext-edit-area { display: flex; flex-direction: column; gap: 0.4rem; }
+        .ext-edit-area textarea { width: 100%; border: 1.5px solid var(--border-input); border-radius: 0.7rem; padding: 0.55rem 0.8rem; font-size: 0.88rem; font-family: 'Nunito', sans-serif; color: var(--text-primary); outline: none; resize: vertical; min-height: 2.3rem; background: var(--bg-input); line-height: 1.5; }
+        .ext-edit-area textarea:focus { border-color: var(--accent); }
+        .ext-edit-actions { display: flex; gap: 0.4rem; justify-content: flex-end; margin-top: 0.6rem; }
+
+        .btn-mini { border: none; border-radius: 100px; padding: 0.35rem 0.85rem; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+        .btn-mini.save { background: var(--accent); color: white; }
+        .btn-mini.cancel { background: var(--bg-panel); color: var(--text-secondary); }
+
+        .empty-view { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-weight: 500; font-size: 1.1rem; background: var(--bg-card); border-radius: 1.5rem; border: 2px dashed var(--border-input); }
+        .empty-view .big { font-size: 3rem; display: block; margin-bottom: 0.5rem; opacity: 0.6; }
+
+        /* 悬浮窗 */
+        .glass-tooltip {
+            position: fixed; z-index: 500; max-width: 340px; min-width: 180px;
+            padding: 0.95rem 1.1rem; border-radius: 1.2rem; pointer-events: none;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.35);
+            opacity: 0; transform: translateY(8px) scale(0.96);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .glass-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
+        .glass-tooltip .gt-cn { font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.55; word-break: break-word; }
+        .glass-tooltip .gt-cn.placeholder { color: var(--text-faint); font-style: italic; font-weight: 500; }
+        .glass-tooltip .gt-ext { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid var(--border-input); }
+        .glass-tooltip .gt-ext-label { font-size: 0.68rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 0.25rem; }
+        .glass-tooltip .gt-ext-value { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+
+        /* 复习页 */
+        .review-topbar { height: 64px; background: var(--topbar-bg); border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; padding: 0 1.5rem; gap: 0.8rem; position: sticky; top: 0; z-index: 10; flex-wrap: wrap; }
+        .review-topbar .logo { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.4rem; }
+        .review-topbar .spacer { flex: 1; }
+        .review-topbar .progress-pill { font-size: 0.85rem; font-weight: 700; color: var(--accent-text); background: var(--accent-soft); padding: 0.35rem 0.9rem; border-radius: 100px; }
+        .review-topbar .mode-pill { font-size: 0.78rem; font-weight: 700; color: var(--warning); background: var(--warning-soft); padding: 0.35rem 0.8rem; border-radius: 100px; }
+        .review-topbar .btn-back-home { background: var(--bg-card); border: 1.5px solid var(--border-strong); color: var(--text-secondary); padding: 0.45rem 0.9rem; border-radius: 100px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.3rem; }
+
+        .review-content { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+        .review-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.4rem; flex-wrap: wrap; gap: 0.8rem; }
+        .review-head h2 { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); }
+        .review-head .sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem; }
+        .review-head .stats { display: flex; gap: 0.6rem; }
+        .stat-pill { background: var(--bg-card); border: 1px solid var(--border-soft); padding: 0.5rem 1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem; }
+        .stat-pill.green { color: var(--success); background: var(--success-soft); }
+        .stat-pill.red { color: var(--danger); background: var(--danger-soft); }
+
+        .review-list { display: flex; flex-direction: column; gap: 0.9rem; }
+        .review-card { background: var(--bg-card); border-radius: 1.3rem; padding: 1.2rem 1.4rem; box-shadow: var(--shadow-card), 0 0 0 1px var(--border-soft) inset; }
+        .review-card .review-row-top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; }
+        .review-card .review-en { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); line-height: 1.25; word-break: break-word; }
+        .review-card .review-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+        .review-card .review-input { flex: 1; border: 1.5px solid var(--border-input); border-radius: 100px; padding: 0.75rem 1.2rem; font-size: 1rem; color: var(--text-primary); outline: none; background: var(--bg-input); min-width: 0; }
+        .review-card .review-input:focus { border-color: var(--accent); }
+        .review-card .review-input:disabled { background: var(--bg-panel); color: var(--text-muted); }
+
+        .review-card .btn-check { background: var(--accent); border: none; color: white; font-weight: 700; padding: 0.75rem 1.4rem; border-radius: 100px; font-size: 0.95rem; cursor: pointer; white-space: nowrap; }
+        .review-card .btn-check:hover { background: var(--accent-hover); }
+        .review-card .btn-check:disabled { background: var(--border-strong); cursor: not-allowed; }
+
+        .review-card .feedback { margin-top: 0.9rem; font-size: 0.95rem; display: none; padding: 0.8rem 1rem; border-radius: 0.9rem; line-height: 1.55; word-break: break-word; }
+        .review-card .feedback.correct { display: block; background: var(--success-soft); color: var(--success); }
+        .review-card .feedback.wrong { display: block; background: var(--danger-soft); color: var(--danger); }
+        .review-card .feedback .fb-head { font-weight: 800; margin-bottom: 0.35rem; font-size: 1rem; }
+        .review-card .feedback .fb-answer { color: var(--text-primary); font-weight: 600; background: var(--bg-card); padding: 0.35rem 0.75rem; border-radius: 0.6rem; display: inline-block; margin-top: 0.2rem; }
+        .review-card .feedback .fb-label { font-weight: 700; color: var(--text-secondary); margin-right: 0.3rem; }
+
+        /* 抽认卡 */
+        .flashcard-wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .flashcard-progress {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-align: center;
+        }
+        .flashcard {
+            perspective: 1600px;
+            width: 100%;
+            max-width: 460px;
+            height: 320px;
+            cursor: pointer;
+            position: relative;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.68, -0.35, 0.27, 1.35);
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 1.6rem;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-card), 0 0 0 1px var(--border-soft) inset;
+            overflow: hidden;
+            text-align: center;
+        }
+        .flashcard-front {
+            background: var(--bg-card);
+            transition: background 0.3s ease;
+        }
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--accent-soft) 0%, var(--bg-card) 100%);
+            transform: rotateY(180deg);
+            transition: background 0.3s ease;
+        }
+        .flashcard.reward .flashcard-back {
+            background: linear-gradient(135deg, #d9f5e3 0%, #eafaf0 100%);
+        }
+        [data-theme="dark"] .flashcard.reward .flashcard-back {
+            background: linear-gradient(135deg, #1c3a2a 0%, #14301f 100%);
+        }
+        .flashcard.wrong .flashcard-front {
+            background: linear-gradient(135deg, #fdeaea 0%, #fff5f5 100%);
+        }
+        [data-theme="dark"] .flashcard.wrong .flashcard-front {
+            background: linear-gradient(135deg, #2e1a1e 0%, #3a2024 100%);
+        }
+
+        .flashcard-word {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.6rem;
+            text-align: center;
+            word-break: break-word;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            padding: 0 0.5rem;
+        }
+        .flashcard-cn {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.5;
+            word-break: break-word;
+            padding: 0 0.5rem;
+        }
+        .flashcard-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .reward-emoji {
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 0.6rem;
+            display: block;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .reward-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-bottom: 0.4rem;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+        .reward-text {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 0.5rem;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 0.6rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .fc-btn {
+            border: none;
+            border-radius: 100px;
+            padding: 0.8rem 1.4rem;
+            font-weight: 800;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.15s;
+            font-family: 'Nunito', sans-serif;
+        }
+        .fc-btn:active { transform: scale(0.96); }
+        .fc-btn.primary { background: var(--accent); color: white; box-shadow: 0 6px 14px -6px rgba(108,139,199,0.6); }
+        .fc-btn.primary:hover { background: var(--accent-hover); }
+        .fc-btn.ghost { background: var(--bg-panel); color: var(--text-secondary); }
+        .fc-btn.ghost:hover { background: var(--bg-hover); }
+        .fc-btn.success { background: var(--success); color: white; box-shadow: 0 6px 14px -6px rgba(30,158,74,0.5); }
+        .fc-btn.success:hover { background: #188a3e; }
+        .fc-btn.warn { background: var(--warning); color: white; box-shadow: 0 6px 14px -6px rgba(209,139,30,0.5); }
+        .fc-btn.warn:hover { background: #b8791a; }
+        .fc-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* 选择题 */
+        .mc-card { background: var(--bg-card); border-radius: 1.3rem; padding: 1.4rem 1.5rem; box-shadow: var(--shadow-card), 0 0 0 1px var(--border-soft) inset; }
+        .mc-word { font-size: 1.7rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .mc-sub { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1.2rem; }
+        .mc-options { display: flex; flex-direction: column; gap: 0.55rem; }
+        .mc-option { display: flex; align-items: center; gap: 0.8rem; padding: 0.85rem 1rem; border-radius: 1rem; background: var(--bg-card-soft); border: 1.5px solid var(--border-soft); cursor: pointer; text-align: left; font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+        .mc-option:hover:not(.disabled) { background: var(--accent-soft); border-color: var(--accent); }
+        .mc-option .mc-key { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
+        .mc-option .mc-text { flex: 1; }
+        .mc-option.correct { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+        .mc-option.correct .mc-key { background: var(--success); color: white; }
+        .mc-option.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+        .mc-option.wrong .mc-key { background: var(--danger); color: white; }
+        .mc-option.disabled { cursor: default; }
+
+        /* 补全单词 */
+        .cw-card { background: var(--bg-card); border-radius: 1.3rem; padding: 1.6rem 1.6rem 1.3rem; box-shadow: var(--shadow-card), 0 0 0 1px var(--border-soft) inset; }
+        .cw-cn { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.4rem; line-height: 1.5; word-break: break-word; }
+        .cw-hint { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; margin-bottom: 1.3rem; }
+        .cw-letters { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-bottom: 1.2rem; }
+        .cw-letter { width: 38px; height: 46px; border-radius: 0.7rem; background: var(--bg-card-soft); border: 1.5px solid var(--border-soft); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 800; color: var(--text-primary); }
+        .cw-letter.hint-letter { color: var(--accent-text); opacity: 0.9; }
+        .cw-letter.correct { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+        .cw-letter.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+        .cw-input-wrap { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; }
+        .cw-input { flex: 1; background: var(--bg-input); border: 1.5px solid var(--border-input); border-radius: 100px; padding: 0.7rem 1.2rem; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); outline: none; min-width: 0; }
+        .cw-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .cw-input:disabled { background: var(--bg-panel); color: var(--text-muted); }
+
+        /* 错题本页 */
+        .wrongbook-topbar { height: 64px; background: var(--topbar-bg); border-bottom: 1px solid var(--border-soft); display: flex; align-items: center; padding: 0 1.5rem; gap: 1rem; position: sticky; top: 0; z-index: 10; }
+        .wrongbook-topbar .logo { font-size: 1.15rem; font-weight: 800; color: var(--danger); display: flex; align-items: center; gap: 0.5rem; }
+        .wrongbook-topbar .spacer { flex: 1; }
+        .wrongbook-topbar .count-pill { font-size: 0.9rem; font-weight: 700; color: var(--danger); background: var(--danger-soft); padding: 0.4rem 1rem; border-radius: 100px; }
+        .wrongbook-topbar .btn-back-home { background: var(--bg-card); border: 1.5px solid var(--border-strong); color: var(--text-secondary); padding: 0.5rem 1.1rem; border-radius: 100px; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+
+        .wrongbook-content { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+        .wrongbook-head { margin-bottom: 1.4rem; }
+        .wrongbook-head h2 { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); }
+        .wrongbook-head .sub { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem; }
+
+        .wrongbook-list { display: flex; flex-direction: column; gap: 0.9rem; }
+        .wrongbook-card { background: var(--bg-card); border-radius: 1.3rem; padding: 1.1rem 1.3rem; box-shadow: var(--shadow-card), 0 0 0 1px var(--border-soft) inset; display: flex; align-items: flex-start; gap: 1rem; }
+        .wrongbook-card.deep { box-shadow: var(--shadow-card), 0 0 0 1.5px var(--danger-border) inset; background: linear-gradient(135deg, var(--bg-card) 0%, var(--danger-soft) 100%); }
+        .wrongbook-card .wb-body { flex: 1; min-width: 0; }
+        .wrongbook-card .wb-en { font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.3rem; word-break: break-word; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .wrongbook-card.deep .wb-en { color: var(--danger-deep); }
+        .wrongbook-card .wb-cn { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; margin-bottom: 0.5rem; }
+        .wrongbook-card .wb-marks { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+        .wrongbook-card .wb-mark { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 20px; border-radius: 40px; background: var(--danger-soft-hover); color: var(--danger); font-size: 0.72rem; font-weight: 800; border: 1px solid var(--danger-border); }
+        .wrongbook-card .wb-mark.deep { background: var(--danger-deep); color: #ffe0e0; border-color: var(--danger-deep); }
+        .wrongbook-card .wb-dates { font-size: 0.72rem; color: var(--text-faint); font-weight: 600; margin-top: 0.4rem; }
+        .wrongbook-card .wb-clear-btn { background: transparent; border: 1.5px solid var(--border-soft); color: var(--text-faint); padding: 0.4rem 0.8rem; border-radius: 100px; font-size: 0.75rem; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+        .wrongbook-card .wb-clear-btn:hover { background: var(--danger-soft); border-color: var(--danger-border); color: var(--danger); }
+
+        .wrongbook-empty { text-align: center; padding: 4rem 2rem; color: var(--text-muted); font-weight: 500; font-size: 1.1rem; background: var(--bg-card); border-radius: 1.5rem; border: 2px dashed var(--border-input); }
+        .wrongbook-empty .big { font-size: 3rem; display: block; margin-bottom: 0.5rem; opacity: 0.6; }
+
+        /* 弹窗 */
+        .modal-mask { position: fixed; inset: 0; background: var(--modal-mask); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; overflow-y: auto; }
+        .modal-mask.show { display: flex; }
+        .modal { background: var(--bg-card); border-radius: 1.8rem; padding: 1.6rem 1.4rem 1.4rem; max-width: 420px; width: 100%; box-shadow: var(--shadow-modal); }
+        .modal h3 { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); text-align: center; margin-bottom: 0.3rem; }
+        .modal .modal-sub { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem; }
+
+        .modal .modal-options { display: flex; flex-direction: column; gap: 0.7rem; }
+        .option-btn { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.1rem; border-radius: 1.2rem; border: 1.5px solid var(--border-soft); background: var(--bg-card-soft); cursor: pointer; text-align: left; font-family: 'Nunito', sans-serif; }
+        .option-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+        .option-btn .icon { font-size: 1.5rem; }
+        .option-btn .opt-text { flex: 1; }
+        .option-btn .opt-title { font-weight: 800; color: var(--text-primary); font-size: 1rem; margin-bottom: 0.15rem; }
+        .option-btn .opt-desc { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+        .modal .modal-cancel { margin-top: 0.9rem; width: 100%; background: transparent; border: none; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; padding: 0.6rem; cursor: pointer; border-radius: 100px; }
+
+        /* 复习模式选择器 */
+        .mode-picker-mask { position: fixed; inset: 0; background: var(--modal-mask); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 4500; padding: 1rem; overflow-y: auto; }
+        .mode-picker-mask.show { display: flex; }
+        .mode-picker { background: var(--bg-card); border-radius: 1.8rem; padding: 1.6rem 1.4rem 1.4rem; max-width: 480px; width: 100%; box-shadow: var(--shadow-modal), 0 0 0 1px var(--border-soft) inset; max-height: 92vh; overflow-y: auto; }
+        .mode-picker h3 { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); text-align: center; margin-bottom: 0.3rem; }
+        .mode-picker .mp-sub { text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.3rem; font-weight: 600; }
+        .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        @media (max-width: 480px) { .mode-grid { grid-template-columns: 1fr; } }
+        .mode-card { display: flex; flex-direction: column; gap: 0.4rem; padding: 1rem 0.9rem; border-radius: 1.1rem; border: 1.5px solid var(--border-soft); background: var(--bg-card-soft); cursor: pointer; text-align: left; font-family: 'Nunito', sans-serif; }
+        .mode-card:hover { background: var(--accent-soft); border-color: var(--accent); }
+        .mode-card .mc-icon { font-size: 1.8rem; margin-bottom: 0.2rem; }
+        .mode-card .mc-title { font-weight: 800; color: var(--text-primary); font-size: 1rem; }
+        .mode-card .mc-desc { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; line-height: 1.4; }
+        .mode-picker .mp-cancel { margin-top: 0.4rem; width: 100%; background: transparent; border: none; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; padding: 0.6rem; cursor: pointer; border-radius: 100px; }
+
+        /* 个人资料弹窗 */
+        .profile-mask { position: fixed; inset: 0; background: var(--modal-mask); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 4000; padding: 1rem; overflow-y: auto; }
+        .profile-mask.show { display: flex; }
+        .profile-modal { background: var(--bg-card); border-radius: 1.8rem; padding: 1.8rem 1.6rem 1.4rem; max-width: 440px; width: 100%; box-shadow: var(--shadow-modal), 0 0 0 1px var(--border-soft) inset; max-height: 92vh; overflow-y: auto; }
+
+        .profile-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.3rem; }
+        .profile-title { font-size: 1.15rem; font-weight: 800; color: var(--text-primary); }
+        .profile-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; padding: 0.3rem 0.6rem; border-radius: 40px; }
+        .profile-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+        .profile-tabs { display: flex; background: var(--bg-panel); border-radius: 100px; padding: 0.25rem; margin-bottom: 1.4rem; }
+        .profile-tab { flex: 1; text-align: center; padding: 0.55rem 0.5rem; border-radius: 100px; font-size: 0.85rem; font-weight: 800; color: var(--text-muted); cursor: pointer; border: none; background: transparent; }
+        .profile-tab.active { background: var(--accent); color: white; }
+
+        .avatar-edit-wrap { display: flex; flex-direction: column; align-items: center; margin-bottom: 1.3rem; }
+        .avatar-preview { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #a7c1e8 100%); color: white; font-size: 3rem; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 0.8rem; box-shadow: 0 10px 24px -8px rgba(31,45,70,0.3), 0 0 0 3px var(--bg-card), 0 0 0 4px var(--border-soft); position: relative; }
+        .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-preview.dragover { box-shadow: 0 10px 24px -8px rgba(31,45,70,0.3), 0 0 0 3px var(--accent), 0 0 0 6px var(--accent-soft); }
+        .avatar-preview.dragover::after { content: '📥 松手上传'; position: absolute; inset: 0; background: rgba(108,139,199,0.85); color: white; font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        .avatar-tip { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; text-align: center; margin-bottom: 0.5rem; }
+        .avatar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.2rem; }
+        .avatar-action-btn { background: var(--bg-card-soft); border: 1.5px solid var(--border-soft); color: var(--text-secondary); font-weight: 700; font-size: 0.82rem; padding: 0.5rem 0.95rem; border-radius: 100px; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; }
+        .avatar-action-btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-text); }
+
+        .color-picker-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; text-align: center; margin-bottom: 0.6rem; }
+        .color-swatches { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 1.2rem; }
+        .color-swatch { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2.5px solid transparent; box-shadow: 0 2px 6px -2px rgba(31,45,70,0.25); position: relative; }
+        .color-swatch.selected { border-color: var(--text-primary); transform: scale(1.15); }
+        .color-swatch.selected::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.85rem; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+        .profile-field-label { font-size: 0.78rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; padding-left: 0.2rem; }
+        .profile-field { position: relative; margin-bottom: 0.8rem; }
+        .profile-field input { width: 100%; background: var(--bg-input); border: 1.5px solid var(--border-input); border-radius: 0.9rem; padding: 0.8rem 1.1rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); outline: none; }
+        .profile-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+        .profile-btns { display: flex; gap: 0.5rem; margin-top: 0.6rem; }
+        .profile-btn { flex: 1; border: none; border-radius: 100px; padding: 0.75rem 1rem; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
+        .profile-btn.primary { background: var(--accent); color: white; }
+        .profile-btn.ghost { background: var(--bg-panel); color: var(--text-secondary); }
+
+        .pw-hint { font-size: 0.75rem; font-weight: 600; margin-top: -0.4rem; margin-bottom: 0.8rem; padding-left: 1rem; min-height: 1rem; color: var(--text-muted); }
+        .pw-hint.weak { color: var(--danger); }
+        .pw-hint.ok { color: var(--success); }
+
+        .hidden { display: none !important; }
+
+        .mobile-hamburger {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 800;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-soft);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-sidebar-mask {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 850;
+            backdrop-filter: blur(2px);
+        }
+        .mobile-sidebar-mask.show { display: block; }
+
+        /* 手机版 */
+        body.mobile .mobile-hamburger { display: flex; }
+        body.mobile .home-body { display: block; }
+        body.mobile .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 82vw;
+            max-width: 340px;
+            height: 100vh;
+            z-index: 900;
+            transform: translateX(-100%);
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid var(--border-soft);
+            box-shadow: 4px 0 30px -10px rgba(0,0,0,0.3);
+            padding: 1.2rem 1rem;
+        }
+        body.mobile .sidebar.open { transform: translateX(0); }
+
+        body.mobile .home-content { padding: 4.5rem 0.9rem 2rem; }
+        body.mobile .card-grid { grid-template-columns: 1fr; gap: 0.7rem; }
+        body.mobile .content-header { align-items: stretch; }
+        body.mobile .content-header h2 { font-size: 1.4rem; }
+        body.mobile .toolbar { width: 100%; }
+        body.mobile .toolbar-btn { flex: 1; justify-content: center; font-size: 0.82rem; padding: 0.6rem 0.8rem; }
+
+        body.mobile .big-card { padding: 1rem; border-radius: 1.1rem; }
+        body.mobile .word-hover-trigger { font-size: 1.2rem; padding-right: 3.5rem; }
+        body.mobile .big-card .card-cn { font-size: 0.9rem; }
+        body.mobile .big-card .mini-btn { padding: 0.55rem 0.6rem; font-size: 0.8rem; }
+
+        body.mobile .btn-add,
+        body.mobile .btn-clear,
+        body.mobile .auth-submit,
+        body.mobile .review-card .btn-check,
+        body.mobile .fc-btn,
+        body.mobile .profile-btn,
+        body.mobile .btn-mini,
+        body.mobile .mc-option {
+            min-height: 44px;
+            font-size: 0.92rem;
+        }
+
+        body.mobile .add-field input,
+        body.mobile .search-wrap input,
+        body.mobile .auth-field input,
+        body.mobile .profile-field input,
+        body.mobile .review-input,
+        body.mobile .cw-input {
+            font-size: 1rem;
+            padding-top: 0.85rem;
+            padding-bottom: 0.85rem;
+        }
+
+        body.mobile .review-topbar { padding: 0 0.8rem; height: auto; min-height: 56px; padding-top: 0.5rem; padding-bottom: 0.5rem; gap: 0.5rem; }
+        body.mobile .review-topbar .logo { font-size: 0.95rem; }
+        body.mobile .review-topbar .progress-pill,
+        body.mobile .review-topbar .mode-pill { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+        body.mobile .review-topbar .btn-back-home { padding: 0.4rem 0.7rem; font-size: 0.75rem; }
+        body.mobile .review-content { padding: 1.2rem 0.9rem 2rem; }
+        body.mobile .review-head h2 { font-size: 1.3rem; }
+        body.mobile .review-head .stats { flex-wrap: wrap; }
+        body.mobile .review-card { padding: 1rem 1.1rem; border-radius: 1.1rem; }
+        body.mobile .review-card .review-en { font-size: 1.3rem; }
+
+        body.mobile .flashcard { height: 260px; max-width: 100%; }
+        body.mobile .flashcard-word { font-size: 2rem; }
+        body.mobile .flashcard-cn { font-size: 1.15rem; }
+        body.mobile .flashcard-controls { gap: 0.4rem; }
+        body.mobile .fc-btn { padding: 0.7rem 1rem; font-size: 0.85rem; flex: 1; justify-content: center; }
+
+        body.mobile .mc-word { font-size: 1.4rem; }
+        body.mobile .mc-option { padding: 0.9rem 1rem; font-size: 0.95rem; }
+
+        body.mobile .cw-cn { font-size: 1.05rem; }
+        body.mobile .cw-letter { width: 32px; height: 40px; font-size: 1.1rem; }
+
+        body.mobile .wrongbook-topbar { padding: 0 0.8rem; gap: 0.5rem; height: auto; min-height: 56px; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        body.mobile .wrongbook-topbar .logo { font-size: 1rem; }
+        body.mobile .wrongbook-topbar .count-pill { font-size: 0.8rem; padding: 0.3rem 0.7rem; }
+        body.mobile .wrongbook-topbar .btn-back-home { padding: 0.4rem 0.7rem; font-size: 0.75rem; }
+        body.mobile .wrongbook-content { padding: 1.2rem 0.9rem 2rem; }
+        body.mobile .wrongbook-card { padding: 1rem; }
+        body.mobile .wrongbook-card .wb-en { font-size: 1.15rem; }
+
+        body.mobile .modal,
+        body.mobile .mode-picker,
+        body.mobile .profile-modal,
+        body.mobile .error-popup {
+            max-width: calc(100vw - 1.5rem);
+            border-radius: 1.4rem;
+            padding: 1.4rem 1.2rem 1.2rem;
+        }
+        body.mobile .modal h3,
+        body.mobile .mode-picker h3 { font-size: 1.05rem; }
+        body.mobile .option-btn { padding: 0.9rem 1rem; }
+        body.mobile .mode-grid { grid-template-columns: 1fr; }
+        body.mobile .avatar-preview { width: 100px; height: 100px; font-size: 2.4rem; }
+
+        body.mobile .auth-card { padding: 1.8rem 1.4rem 1.5rem; border-radius: 1.6rem; }
+        body.mobile .auth-title { font-size: 1.25rem; }
+        body.mobile .device-card { padding: 2rem 1.2rem 1.6rem; border-radius: 1.6rem; }
+        body.mobile .device-title { font-size: 1.3rem; }
+        body.mobile .device-options { gap: 0.7rem; }
+        body.mobile .device-option { padding: 1.4rem 1rem 1.2rem; }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+    <div class="glass-tooltip" id="glassTooltip"></div>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+
+    <div class="device-page" id="devicePage">
+        <div class="device-bg-deco"></div>
+        <div class="device-card">
+            <div class="device-logo">📘</div>
+            <div class="device-title">欢迎使用 ww生词本</div>
+            <div class="device-sub">先选一个适合你当前设备的模式</div>
+            <div class="device-options">
+                <button class="device-option" data-device="desktop">
+                    <span class="do-icon">💻</span>
+                    <span class="do-title">电脑端</span>
+                    <span class="do-desc">宽屏布局，左右分栏<br>适合电脑、笔记本、平板横屏</span>
+                </button>
+                <button class="device-option" data-device="mobile">
+                    <span class="do-icon">📱</span>
+                    <span class="do-title">手机端</span>
+                    <span class="do-desc">单列布局，大按钮<br>适合手机、平板竖屏</span>
+                </button>
+            </div>
+            <div class="device-tip">
+                两种模式<strong>数据完全共享</strong>，只是布局不同<br>
+                之后可以在「个人资料」里随时切换
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-page hide" id="authPage">
+        <div class="auth-bg-deco"></div>
+        <button class="back-to-device" id="backToDevice">← 换设备模式</button>
+        <div class="auth-card">
+            <div class="auth-logo">📘</div>
+            <div class="auth-title" id="authTitle">欢迎回来</div>
+            <div class="auth-sub" id="authSub">登录你的 ww生词本</div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin">登录</button>
+                <button class="auth-tab" id="tabRegister">注册</button>
+            </div>
+            <div class="auth-field">
+                <input type="text" id="authUsername" placeholder="用户名（英文或数字，3-20位）" autocomplete="off">
+                <span class="field-check" id="userCheck">✓</span>
+            </div>
+            <div class="auth-field">
+                <input type="password" id="authPassword" placeholder="密码（至少8位，数字+字母）" autocomplete="off">
+                <span class="field-check" id="passCheck" style="right:2.6rem;">✓</span>
+                <button type="button" class="pw-toggle" id="pwToggle" title="显示密码">👁️</button>
+            </div>
+            <div class="auth-hint info" id="authHint">密码由数字和字母组成，至少8位</div>
+            <button class="auth-submit" id="authSubmit">登录</button>
+            <div class="auth-switch-tip" id="authSwitchTip">还没有账号？<a id="switchToRegister">立即注册</a></div>
+        </div>
+    </div>
+
+    <div class="page active" id="pageHome" style="display:none;">
+        <button class="mobile-hamburger" id="mobileHamburger" title="菜单">☰</button>
+        <div class="mobile-sidebar-mask" id="mobileSidebarMask"></div>
+        <div class="home-body">
+            <aside class="sidebar" id="sidebar">
+                <h1>📘 ww生词本 <span class="sub">手动拓展</span></h1>
+                <div class="user-bar" id="userBar" title="点击编辑个人资料">
+                    <div class="user-avatar" id="userAvatar">W</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">用户</div>
+                        <div class="user-status">● 已登录</div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">退出</button>
+                </div>
+
+                <div class="stats-panel">
+                    <div class="stats-panel-title">
+                        <span>📊 学习概览</span>
+                        <span class="streak" id="statsStreak">🔥 0 天</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">累计单词</span>
+                            <span class="stat-value blue" id="statsTotal">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">今日新增</span>
+                            <span class="stat-value green" id="statsToday">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">错词数</span>
+                            <span class="stat-value orange" id="statsWrong">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">正确率</span>
+                            <span class="stat-value small" id="statsAcc">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="add-panel">
+                    <div class="panel-title">➕ 添加新词</div>
+                    <div class="add-field" id="enBox">
+                        <input type="text" id="enInput" placeholder="English word..." autocomplete="off">
+                    </div>
+                    <div class="add-field" id="cnBox">
+                        <input type="text" id="cnInput" placeholder="中文释义 / 备注..." autocomplete="off">
+                    </div>
+                    <div class="add-btns">
+                        <button class="btn-add" id="addBtn">再加点儿</button>
+                        <button class="btn-clear" id="clearTodayBtn">扔垃圾</button>
+                    </div>
+                </div>
+
+                <div class="folder-block">
+                    <div class="folder-block-title">
+                        <span>📁 每日文件</span>
+                        <span class="badge" id="folderCount">0</span>
+                    </div>
+                    <div class="date-list" id="dateList"></div>
+                </div>
+
+                <div class="wrongbook-entry" id="wrongbookEntry">
+                    <div class="wb-left"><span>📕 都你错的</span></div>
+                    <span class="wb-count" id="wrongbookCount">0</span>
+                </div>
+
+                <div class="sidebar-foot">💾 数据保存在浏览器</div>
+            </aside>
+
+            <main class="home-content">
+                <div class="content-header">
+                    <div>
+                        <h2 id="viewTitle">今天</h2>
+                        <div class="content-sub" id="viewSub">0 个单词</div>
+                    </div>
+                    <div class="toolbar">
+                        <button class="toolbar-btn primary" id="reviewBtn">🧠 复习这一天</button>
+                        <button class="toolbar-btn danger" id="clearViewBtn">🗑️ 清空</button>
+                    </div>
+                </div>
+                <div class="search-wrap" id="searchWrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="全局搜索：英文或中文（跨所有日期）..." autocomplete="off">
+                    <button class="search-clear" id="searchClear">✕</button>
+                </div>
+                <div class="global-search-hint" id="globalSearchHint">
+                    <span class="hint-tag">全局搜索</span>
+                    <span id="globalSearchHintText"></span>
+                </div>
+                <div class="card-grid" id="cardGrid"></div>
+            </main>
+        </div>
+    </div>
+
+    <div class="page" id="pageReview">
+        <div class="review-topbar">
+            <div class="logo">🧠 复习</div>
+            <div class="mode-pill" id="reviewModePill">📝 翻译</div>
+            <div class="spacer"></div>
+            <div class="progress-pill" id="reviewProgressPill">0/0 · ✅ 0</div>
+            <button class="btn-back-home" id="backFromReviewBtn">← 返回</button>
+        </div>
+        <div class="review-content">
+            <div class="review-head">
+                <div>
+                    <h2 id="reviewTitle">今天</h2>
+                    <div class="sub" id="reviewSub">0 个单词</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-pill" id="statDone">📊 0/0</div>
+                    <div class="stat-pill green" id="statCorrect">✅ 0</div>
+                    <div class="stat-pill red" id="statWrong">❌ 0</div>
+                </div>
+            </div>
+            <div class="review-list" id="reviewList"></div>
+        </div>
+    </div>
+
+    <div class="page" id="pageWrongbook">
+        <div class="wrongbook-topbar">
+            <div class="logo">📕 都你错的</div>
+            <div class="spacer"></div>
+            <div class="count-pill" id="wrongbookTopCount">0 个错词</div>
+            <button class="btn-back-home" id="backFromWrongbookBtn">← 返回</button>
+        </div>
+        <div class="wrongbook-content">
+            <div class="wrongbook-head">
+                <h2>累积错词</h2>
+                <div class="sub">每次复习答错自动记录 · 同词去重 · 错误 ≥ 3 次显示深红</div>
+            </div>
+            <div class="wrongbook-list" id="wrongbookList"></div>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="modalMask">
+        <div class="modal">
+            <h3 id="modalTitle">今天 · 2026-10-13</h3>
+            <div class="modal-sub">选择打开方式</div>
+            <div class="modal-options">
+                <button class="option-btn" id="optView">
+                    <span class="icon">📖</span>
+                    <span class="opt-text">
+                        <div class="opt-title">查看</div>
+                        <div class="opt-desc">直接浏览这一天的单词</div>
+                    </span>
+                </button>
+                <button class="option-btn" id="optReview">
+                    <span class="icon">🧠</span>
+                    <span class="opt-text">
+                        <div class="opt-title">复习</div>
+                        <div class="opt-desc">选一种模式，开始复习</div>
+                    </span>
+                </button>
+            </div>
+            <button class="modal-cancel" id="modalCancel">取消</button>
+        </div>
+    </div>
+
+    <div class="mode-picker-mask" id="modePickerMask">
+        <div class="mode-picker">
+            <h3>选择复习模式</h3>
+            <div class="mp-sub" id="modePickerSub">今天 · 8 个单词</div>
+            <div class="mode-grid">
+                <button class="mode-card" data-mode="translate">
+                    <span class="mc-icon">📝</span>
+                    <span class="mc-title">翻译</span>
+                    <span class="mc-desc">看英文，默写中文</span>
+                </button>
+                <button class="mode-card" data-mode="flashcard">
+                    <span class="mc-icon">🎴</span>
+                    <span class="mc-title">抽认卡</span>
+                    <span class="mc-desc">卡片翻转，自我评估</span>
+                </button>
+                <button class="mode-card" data-mode="choice">
+                    <span class="mc-icon">🔘</span>
+                    <span class="mc-title">选择题</span>
+                    <span class="mc-desc">4 选 1，考验辨识</span>
+                </button>
+                <button class="mode-card" data-mode="complete">
+                    <span class="mc-icon">⌨️</span>
+                    <span class="mc-title">补全单词</span>
+                    <span class="mc-desc">看中文，补全英文</span>
+                </button>
+            </div>
+            <button class="mp-cancel" id="modePickerCancel">取消</button>
+        </div>
+    </div>
+
+    <div class="profile-mask" id="profileMask">
+        <div class="profile-modal">
+            <div class="profile-head">
+                <div class="profile-title">个人资料</div>
+                <button class="profile-close" id="profileClose">✕</button>
+            </div>
+            <div class="profile-tabs">
+                <button class="profile-tab active" id="ptabAvatar">头像</button>
+                <button class="profile-tab" id="ptabPassword">修改密码</button>
+                <button class="profile-tab" id="ptabDevice">设备</button>
+            </div>
+            <div id="avatarPanel">
+                <div class="avatar-edit-wrap">
+                    <div class="avatar-preview" id="avatarPreview">W</div>
+                    <div class="avatar-tip">点击下方按钮上传图片，或直接拖拽图片到这里</div>
+                </div>
+                <div class="avatar-actions">
+                    <button class="avatar-action-btn" id="avatarUploadBtn"><span>📁</span> 上传图片</button>
+                    <button class="avatar-action-btn" id="avatarResetBtn"><span>🔄</span> 恢复默认</button>
+                </div>
+                <div class="color-picker-label">或者换个配色（首字母模式）</div>
+                <div class="color-swatches" id="colorSwatches"></div>
+                <div class="profile-field-label">显示昵称</div>
+                <div class="profile-field">
+                    <input type="text" id="nicknameInput" placeholder="显示名（默认用用户名）" maxlength="20" autocomplete="off">
+                </div>
+                <div class="profile-btns">
+                    <button class="profile-btn ghost" id="avatarCancelBtn">取消</button>
+                    <button class="profile-btn primary" id="avatarSaveBtn">保存</button>
+                </div>
+            </div>
+            <div id="passwordPanel" class="hidden">
+                <div class="profile-field-label">当前密码</div>
+                <div class="profile-field"><input type="password" id="oldPassword" placeholder="输入当前密码"></div>
+                <div class="profile-field-label">新密码</div>
+                <div class="profile-field"><input type="password" id="newPassword" placeholder="至少8位，数字+字母"></div>
+                <div class="pw-hint" id="pwHint">新密码由数字和字母组成，至少8位</div>
+                <div class="profile-field-label">确认新密码</div>
+                <div class="profile-field"><input type="password" id="newPassword2" placeholder="再输入一次"></div>
+                <div class="profile-btns">
+                    <button class="profile-btn ghost" id="pwCancelBtn">取消</button>
+                    <button class="profile-btn primary" id="pwSaveBtn">确认修改</button>
+                </div>
+            </div>
+            <div id="devicePanel" class="hidden">
+                <div style="text-align:center; padding: 0.5rem 0 1rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💻📱</div>
+                    <div style="font-size: 1rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.3rem;">切换显示模式</div>
+                    <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600; line-height: 1.5;">
+                        当前：<strong id="currentDeviceLabel">电脑端</strong><br>
+                        数据完全共享，只是布局不同
+                    </div>
+                </div>
+                <div class="profile-btns">
+                    <button class="profile-btn ghost" id="switchToDesktopBtn">💻 电脑端</button>
+                    <button class="profile-btn primary" id="switchToMobileBtn">📱 手机端</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+
+    <div class="error-popup-mask" id="errorPopupMask">
+        <div class="error-popup">
+            <span class="ep-emoji">🤨</span>
+            <div class="ep-msg" id="errorPopupMsg">是你本人吗 你就用</div>
+            <div class="ep-sub" id="errorPopupSub">再试一次吧，想清楚再输</div>
+            <button class="ep-btn" id="errorPopupBtn">好吧</button>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        'use strict';
+
+        const STORAGE_KEY = 'cet6_vocab_daily_v1';
+        const WRONGBOOK_KEY = 'cet6_wrongbook_v1';
+        const THEME_KEY = 'cet6_theme_v1';
+        const USERS_KEY = 'cet6_users_v1';
+        const SESSION_KEY = 'cet6_session_v1';
+        const LOGIN_FAIL_KEY = 'cet6_login_fail_v1';
+        const STATS_KEY = 'cet6_stats_v1';
+        const DEVICE_KEY = 'cet6_device_v1';
+
+        let data = {};
+        let wrongbook = {};
+        let stats = { totalCorrect: 0, totalWrong: 0, dailyLog: {} };
+        let currentDate = todayKey();
+        let reviewDate = todayKey();
+        let reviewMode = 'translate';
+        let reviewState = {};
+
+        let expandedSet = new Set();
+        let editingMap = new Map();
+
+        let searchQuery = '';
+        let currentUser = null;
+        let tempAvatarData = null;
+        let tempAvatarColor = null;
+        let tempNickname = '';
+        let currentDevice = 'desktop';
+
+        const $ = id => document.getElementById(id);
+
+        const devicePage = $('devicePage');
+        const authPage = $('authPage');
+        const authTitle = $('authTitle');
+        const authSub = $('authSub');
+        const tabLogin = $('tabLogin');
+        const tabRegister = $('tabRegister');
+        const authUsername = $('authUsername');
+        const authPassword = $('authPassword');
+        const userCheck = $('userCheck');
+        const passCheck = $('passCheck');
+        const pwToggle = $('pwToggle');
+        const authHint = $('authHint');
+        const authSubmit = $('authSubmit');
+        const authSwitchTip = $('authSwitchTip');
+        const backToDevice = $('backToDevice');
+
+        const errorPopupMask = $('errorPopupMask');
+        const errorPopupMsg = $('errorPopupMsg');
+        const errorPopupSub = $('errorPopupSub');
+        const errorPopupBtn = $('errorPopupBtn');
+
+        const pageHome = $('pageHome');
+        const pageReview = $('pageReview');
+        const pageWrongbook = $('pageWrongbook');
+
+        const themeToggle = $('themeToggle');
+        const mobileHamburger = $('mobileHamburger');
+        const mobileSidebarMask = $('mobileSidebarMask');
+        const sidebar = $('sidebar');
+
+        const userBar = $('userBar');
+        const userAvatar = $('userAvatar');
+        const userName = $('userName');
+        const logoutBtn = $('logoutBtn');
+
+        const statsStreak = $('statsStreak');
+        const statsTotal = $('statsTotal');
+        const statsToday = $('statsToday');
+        const statsWrong = $('statsWrong');
+        const statsAcc = $('statsAcc');
+
+        const enInput = $('enInput');
+        const cnInput = $('cnInput');
+        const enBox = $('enBox');
+        const cnBox = $('cnBox');
+        const addBtn = $('addBtn');
+        const clearTodayBtn = $('clearTodayBtn');
+
+        const dateList = $('dateList');
+        const folderCount = $('folderCount');
+        const viewTitle = $('viewTitle');
+        const viewSub = $('viewSub');
+        const cardGrid = $('cardGrid');
+        const reviewBtn = $('reviewBtn');
+        const clearViewBtn = $('clearViewBtn');
+
+        const searchWrap = $('searchWrap');
+        const searchInput = $('searchInput');
+        const searchClear = $('searchClear');
+        const globalSearchHint = $('globalSearchHint');
+        const globalSearchHintText = $('globalSearchHintText');
+
+        const wrongbookEntry = $('wrongbookEntry');
+        const wrongbookCount = $('wrongbookCount');
+        const wrongbookTopCount = $('wrongbookTopCount');
+        const backFromWrongbookBtn = $('backFromWrongbookBtn');
+        const wrongbookList = $('wrongbookList');
+
+        const reviewProgressPill = $('reviewProgressPill');
+        const reviewModePill = $('reviewModePill');
+        const backFromReviewBtn = $('backFromReviewBtn');
+        const reviewTitle = $('reviewTitle');
+        const reviewSub = $('reviewSub');
+        const statDone = $('statDone');
+        const statCorrect = $('statCorrect');
+        const statWrong = $('statWrong');
+        const reviewList = $('reviewList');
+
+        const modalMask = $('modalMask');
+        const modalTitle = $('modalTitle');
+        const optView = $('optView');
+        const optReview = $('optReview');
+        const modalCancel = $('modalCancel');
+        const toastEl = $('toast');
+        const glassTooltip = $('glassTooltip');
+
+        const modePickerMask = $('modePickerMask');
+        const modePickerSub = $('modePickerSub');
+        const modePickerCancel = $('modePickerCancel');
+
+        const profileMask = $('profileMask');
+        const profileClose = $('profileClose');
+        const ptabAvatar = $('ptabAvatar');
+        const ptabPassword = $('ptabPassword');
+        const ptabDevice = $('ptabDevice');
+        const avatarPanel = $('avatarPanel');
+        const passwordPanel = $('passwordPanel');
+        const devicePanel = $('devicePanel');
+        const currentDeviceLabel = $('currentDeviceLabel');
+        const switchToDesktopBtn = $('switchToDesktopBtn');
+        const switchToMobileBtn = $('switchToMobileBtn');
+        const avatarPreview = $('avatarPreview');
+        const avatarUploadBtn = $('avatarUploadBtn');
+        const avatarResetBtn = $('avatarResetBtn');
+        const colorSwatches = $('colorSwatches');
+        const nicknameInput = $('nicknameInput');
+        const avatarSaveBtn = $('avatarSaveBtn');
+        const avatarCancelBtn = $('avatarCancelBtn');
+        const avatarFileInput = $('avatarFileInput');
+        const oldPassword = $('oldPassword');
+        const newPassword = $('newPassword');
+        const newPassword2 = $('newPassword2');
+        const pwHint = $('pwHint');
+        const pwSaveBtn = $('pwSaveBtn');
+        const pwCancelBtn = $('pwCancelBtn');
+
+        const AVATAR_COLORS = [
+            'linear-gradient(135deg, #6c8bc7 0%, #a7c1e8 100%)',
+            'linear-gradient(135deg, #e07a8a 0%, #f0b0b8 100%)',
+            'linear-gradient(135deg, #7bbf9a 0%, #b5e6c5 100%)',
+            'linear-gradient(135deg, #d1a05c 0%, #f0d0a0 100%)',
+            'linear-gradient(135deg, #9a7bc7 0%, #c8b0e8 100%)',
+            'linear-gradient(135deg, #4aa5c9 0%, #a0d8e8 100%)',
+            'linear-gradient(135deg, #d47b9a 0%, #f0b8c8 100%)',
+            'linear-gradient(135deg, #5a6577 0%, #a0a8b5 100%)',
+        ];
+
+        const REWARD_TEXTS = [
+            { emoji: '🧋', text: '奖励自己喝杯奶茶吧！' },
+            { emoji: '🍰', text: '去买个小蛋糕犒劳自己～' },
+            { emoji: '🍜', text: '来碗热腾腾的夜宵！' },
+            { emoji: '☕', text: '来杯咖啡继续加油！' },
+            { emoji: '🍫', text: '来块巧克力，甜一下' },
+            { emoji: '🎧', text: '听首喜欢的歌放松一下' },
+            { emoji: '😎', text: '牛啊！这词拿下了' },
+            { emoji: '🌟', text: '太棒了，又记住一个！' },
+            { emoji: '🚀', text: '这速度，六级稳了' },
+            { emoji: '🏆', text: '王者就是你！' },
+            { emoji: '🎉', text: '漂亮！下一张继续' },
+            { emoji: '💪', text: '干得漂亮，继续保持！' },
+            { emoji: '🍦', text: '奖励一个甜筒' },
+            { emoji: '🐱', text: '撸个猫放松一下' },
+            { emoji: '🛋️', text: '躺 5 分钟奖励自己' },
+        ];
+        function pickRandomReward() {
+            return REWARD_TEXTS[Math.floor(Math.random() * REWARD_TEXTS.length)];
+        }
+
+        let toastTimer = null;
+        function showToast(msg, type = 'info') {
+            toastEl.textContent = msg;
+            toastEl.className = 'toast show ' + type;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { toastEl.className = 'toast ' + type; }, 1800);
+        }
+
+        function speakWord(word) {
+            if (!word) return;
+            if (!('speechSynthesis' in window)) { showToast('当前浏览器不支持朗读', 'warn'); return; }
+            try {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(word);
+                u.lang = 'en-US';
+                u.rate = 0.9;
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = voices.find(v => /en(-|_)(US|GB)/i.test(v.lang));
+                if (preferred) u.voice = preferred;
+                window.speechSynthesis.speak(u);
+            } catch (e) { console.warn(e); }
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+            }
+        }
+        function initTheme() {
+            let theme = localStorage.getItem(THEME_KEY);
+            if (!theme) theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            applyTheme(theme);
+        }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, next);
+            applyTheme(next);
+            showToast(next === 'dark' ? '🌙 深色模式' : '☀️ 浅色模式', 'info');
+        }
+
+        function applyDevice(device) {
+            currentDevice = device;
+            localStorage.setItem(DEVICE_KEY, device);
+            if (device === 'mobile') document.body.classList.add('mobile');
+            else document.body.classList.remove('mobile');
+            closeMobileSidebar();
+            if (currentDeviceLabel) currentDeviceLabel.textContent = device === 'mobile' ? '手机端' : '电脑端';
+        }
+        function openMobileSidebar() {
+            sidebar.classList.add('open');
+            mobileSidebarMask.classList.add('show');
+        }
+        function closeMobileSidebar() {
+            sidebar.classList.remove('open');
+            mobileSidebarMask.classList.remove('show');
+        }
+
+        function todayKey() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+        function yesterdayKey() {
+            const d = new Date();
+            d.setDate(d.getDate() - 1);
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+        function friendlyDate(key) {
+            if (key === todayKey()) return `今天 · ${key}`;
+            if (key === yesterdayKey()) return `昨天 · ${key}`;
+            return key;
+        }
+        function shortDateTag(key) {
+            if (key === todayKey()) return '今天';
+            if (key === yesterdayKey()) return '昨天';
+            return key.slice(5);
+        }
+        function escapeHtml(t) {
+            if (t === null || t === undefined) return '';
+            return String(t).replace(/[&<>"']/g, m => ({
+                '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+            })[m]);
+        }
+
+        let authMode = 'login';
+        function getUsers() {
+            try { const raw = localStorage.getItem(USERS_KEY); const obj = raw ? JSON.parse(raw) : {}; return (typeof obj === 'object' && !Array.isArray(obj)) ? obj : {}; }
+            catch { return {}; }
+        }
+        function saveUsers(users) {
+            try { localStorage.setItem(USERS_KEY, JSON.stringify(users)); return true; } catch { return false; }
+        }
+        function getSession() {
+            try { const raw = localStorage.getItem(SESSION_KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
+        }
+        function saveSession(username) {
+            try { localStorage.setItem(SESSION_KEY, JSON.stringify({ username, loginAt: Date.now() })); } catch {}
+        }
+        function clearSession() {
+            try { localStorage.removeItem(SESSION_KEY); } catch {}
+        }
+        function isValidUsername(u) {
+            if (!u) return false;
+            const t = u.trim();
+            if (t.length < 3 || t.length > 20) return false;
+            return /^[A-Za-z0-9_]+$/.test(t);
+        }
+        function getPasswordStrength(pw) {
+            if (!pw) return 'empty';
+            if (pw.length < 8) return 'too-short';
+            const hasLetter = /[A-Za-z]/.test(pw);
+            const hasDigit = /\d/.test(pw);
+            if (!hasLetter || !hasDigit) return 'simple';
+            if (pw.length >= 12) return 'strong';
+            return 'ok';
+        }
+        function updateFieldChecks() {
+            const u = authUsername.value.trim();
+            const p = authPassword.value;
+            if (isValidUsername(u)) userCheck.classList.add('show'); else userCheck.classList.remove('show');
+            const strength = getPasswordStrength(p);
+            if (strength === 'strong' || strength === 'ok') passCheck.classList.add('show'); else passCheck.classList.remove('show');
+            if (p.length > 0) pwToggle.classList.add('show'); else pwToggle.classList.remove('show');
+
+            if (authMode === 'register') {
+                if (p.length === 0) { authHint.className = 'auth-hint info'; authHint.textContent = '密码由数字和字母组成，至少8位'; }
+                else if (strength === 'too-short') { authHint.className = 'auth-hint weak'; authHint.textContent = '密码太短了，至少8位哦'; }
+                else if (strength === 'simple') { authHint.className = 'auth-hint weak'; authHint.textContent = '密码过于简单，请同时包含字母和数字'; }
+                else { authHint.className = 'auth-hint ok'; authHint.textContent = strength === 'strong' ? '密码强度：强 ✓' : '密码符合要求 ✓'; }
+            } else {
+                if (p.length === 0) { authHint.className = 'auth-hint info'; authHint.textContent = '请输入你的密码'; }
+                else { authHint.className = 'auth-hint info'; authHint.textContent = '　'; }
+            }
+            const canSubmit = (authMode === 'register')
+                ? (isValidUsername(u) && (strength === 'ok' || strength === 'strong'))
+                : (u.length > 0 && p.length > 0);
+            authSubmit.disabled = !canSubmit;
+        }
+        function switchAuthMode(mode) {
+            authMode = mode;
+            if (mode === 'login') {
+                tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+                authTitle.textContent = '欢迎回来'; authSub.textContent = '登录你的 ww生词本';
+                authSubmit.textContent = '登录';
+                authSwitchTip.innerHTML = '还没有账号？<a id="switchToRegister">立即注册</a>';
+                $('switchToRegister').addEventListener('click', () => switchAuthMode('register'));
+            } else {
+                tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+                authTitle.textContent = '创建账号'; authSub.textContent = '注册后就可以开始背单词啦';
+                authSubmit.textContent = '注册';
+                authSwitchTip.innerHTML = '已有账号？<a id="switchToRegister">立即登录</a>';
+                $('switchToRegister').addEventListener('click', () => switchAuthMode('login'));
+            }
+            authHint.className = 'auth-hint info';
+            authHint.textContent = (mode === 'register') ? '密码由数字和字母组成，至少8位' : '请输入你的密码';
+            updateFieldChecks();
+        }
+        function showErrorPopup(msg, sub) {
+            errorPopupMsg.textContent = msg || '是你本人吗 你就用';
+            if (sub) { errorPopupSub.textContent = sub; errorPopupSub.style.display = ''; }
+            else errorPopupSub.style.display = 'none';
+            errorPopupMask.classList.add('show');
+        }
+        function closeErrorPopup() { errorPopupMask.classList.remove('show'); }
+
+        function applyUserProfile() {
+            if (!currentUser) return;
+            const users = getUsers();
+            const u = users[currentUser];
+            if (!u) return;
+            const displayName = u.displayName || currentUser;
+            userName.textContent = displayName;
+            document.title = `ww生词本 · ${displayName}`;
+            userAvatar.innerHTML = '';
+            userAvatar.style.background = '';
+            if (u.avatar) {
+                const img = document.createElement('img');
+                img.src = u.avatar;
+                userAvatar.appendChild(img);
+            } else {
+                const color = u.avatarColor || AVATAR_COLORS[0];
+                userAvatar.style.background = color;
+                userAvatar.textContent = (displayName || '?').charAt(0).toUpperCase();
+            }
+            const foot = document.querySelector('.sidebar-foot');
+            if (foot) foot.textContent = `💾 ${displayName} · 数据保存在浏览器`;
+        }
+
+        function enterApp(username) {
+            currentUser = username;
+            authPage.classList.add('hide');
+            pageHome.style.display = '';
+            applyUserProfile();
+            try { load(); } catch (e) { console.error(e); }
+            try { renderHome(); } catch (e) { console.error(e); }
+        }
+
+        function handleRegister() {
+            const u = authUsername.value.trim();
+            const p = authPassword.value;
+            if (!isValidUsername(u)) { showToast('用户名不合法（3-20位字母/数字/下划线）', 'error'); return; }
+            const strength = getPasswordStrength(p);
+            if (strength === 'too-short') { showToast('密码太短，至少8位', 'error'); return; }
+            if (strength === 'simple') { showToast('密码过于简单，请同时包含字母和数字', 'error'); return; }
+            if (strength !== 'ok' && strength !== 'strong') { showToast('密码不符合要求', 'error'); return; }
+            const users = getUsers();
+            if (users[u]) { showToast('这个用户名已被注册', 'error'); return; }
+            users[u] = { password: p, createdAt: Date.now() };
+            saveUsers(users);
+            showToast('🎉 注册成功，请登录', 'success');
+            authPassword.value = '';
+            switchAuthMode('login');
+            authUsername.value = u;
+            updateFieldChecks();
+        }
+        function handleLogin() {
+            const u = authUsername.value.trim();
+            const p = authPassword.value;
+            if (!u || !p) { showToast('请填写用户名和密码', 'warn'); return; }
+            const users = getUsers();
+            const user = users[u];
+            if (!user) { showToast('用户名或密码错误', 'error'); bumpLoginFail(); return; }
+            if (user.password === p) {
+                localStorage.removeItem(LOGIN_FAIL_KEY);
+                saveSession(u);
+                showToast(`欢迎回来，${u}！`, 'success');
+                setTimeout(() => enterApp(u), 300);
+                return;
+            }
+            const fails = bumpLoginFail();
+            if (fails >= 2) showErrorPopup('是你本人吗 你就用', '输错两次了，想清楚再试');
+            else showToast('密码不对哦，再试一次', 'error');
+        }
+        function bumpLoginFail() {
+            let fails = parseInt(localStorage.getItem(LOGIN_FAIL_KEY) || '0', 10);
+            fails += 1;
+            localStorage.setItem(LOGIN_FAIL_KEY, String(fails));
+            return fails;
+        }
+
+        function load() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                data = raw ? JSON.parse(raw) : {};
+                if (typeof data !== 'object' || Array.isArray(data)) data = {};
+                Object.keys(data).forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
+            } catch (e) { data = {}; }
+            if (!data[currentDate]) data[currentDate] = [];
+
+            try {
+                const rawWb = localStorage.getItem(WRONGBOOK_KEY);
+                wrongbook = rawWb ? JSON.parse(rawWb) : {};
+                if (typeof wrongbook !== 'object' || Array.isArray(wrongbook)) wrongbook = {};
+            } catch { wrongbook = {}; }
+
+            try {
+                const rawStats = localStorage.getItem(STATS_KEY);
+                stats = rawStats ? JSON.parse(rawStats) : { totalCorrect: 0, totalWrong: 0, dailyLog: {} };
+                if (typeof stats !== 'object') stats = { totalCorrect: 0, totalWrong: 0, dailyLog: {} };
+                if (!stats.dailyLog) stats.dailyLog = {};
+            } catch { stats = { totalCorrect: 0, totalWrong: 0, dailyLog: {} }; }
+        }
+        function save() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); return true; }
+            catch (e) { showToast('保存失败：存储空间可能已满', 'error'); return false; }
+        }
+        function saveWrongbook() {
+            try { localStorage.setItem(WRONGBOOK_KEY, JSON.stringify(wrongbook)); return true; } catch { return false; }
+        }
+        function saveStats() {
+            try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); return true; } catch { return false; }
+        }
+
+        function normalize(str) {
+            return String(str || '').toLowerCase().replace(/[\s，。、,.;；:：!！?？'"（）()【】\[\]\-—…·]/g, '');
+        }
+        function isAnswerCorrect(userInput, standard) {
+            const u = normalize(userInput);
+            const s = normalize(standard);
+            if (!u || !s) return false;
+            if (u === s) return true;
+            if (u.includes(s)) return true;
+            if (s.includes(u) && u.length >= 2) return true;
+            const segments = String(standard).split(/[；;，,。.、\s\/|]+/).map(normalize).filter(x => x.length >= 2);
+            for (const seg of segments) {
+                if (u.includes(seg) || seg.includes(u)) return true;
+            }
+            return false;
+        }
+        function recordWrong(en, cn) {
+            const key = en.toLowerCase();
+            const today = todayKey();
+            if (!wrongbook[key]) wrongbook[key] = { en, cn: cn || '', count: 0, dates: [] };
+            wrongbook[key].en = en;
+            if (cn) wrongbook[key].cn = cn;
+            if (!wrongbook[key].dates.includes(today)) {
+                wrongbook[key].count += 1;
+                wrongbook[key].dates.push(today);
+                saveWrongbook();
+                return true;
+            }
+            saveWrongbook();
+            return false;
+        }
+        function getWrongCount(en) {
+            const key = en.toLowerCase();
+            return wrongbook[key] ? wrongbook[key].count : 0;
+        }
+        function getWrongbookCount() { return Object.keys(wrongbook).length; }
+        function removeFromWrongbook(en) {
+            delete wrongbook[en.toLowerCase()];
+            saveWrongbook();
+        }
+        function updateStatsAfterAnswer(correct) {
+            if (correct) stats.totalCorrect = (stats.totalCorrect || 0) + 1;
+            else stats.totalWrong = (stats.totalWrong || 0) + 1;
+            const today = todayKey();
+            if (!stats.dailyLog[today]) stats.dailyLog[today] = 0;
+            stats.dailyLog[today] += 1;
+            saveStats();
+        }
+        function getTotalWords() {
+            let total = 0;
+            Object.keys(data).forEach(k => { total += (data[k] || []).length; });
+            return total;
+        }
+        function getTodayAdded() { return (data[todayKey()] || []).length; }
+        function getAccuracy() {
+            const total = (stats.totalCorrect || 0) + (stats.totalWrong || 0);
+            if (total === 0) return null;
+            return Math.round((stats.totalCorrect / total) * 100);
+        }
+        function getStreak() {
+            const log = stats.dailyLog || {};
+            let streak = 0;
+            let d = new Date();
+            for (let i = 0; i < 3650; i++) {
+                const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                if (log[key] && log[key] > 0) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    if (i === 0) { d.setDate(d.getDate() - 1); continue; }
+                    break;
+                }
+            }
+            return streak;
+        }
+        function renderStatsPanel() {
+            statsTotal.textContent = getTotalWords();
+            statsToday.textContent = getTodayAdded();
+            statsWrong.textContent = getWrongbookCount();
+            const acc = getAccuracy();
+            statsAcc.textContent = acc === null ? '—' : acc + '%';
+            statsStreak.textContent = `🔥 ${getStreak()} 天`;
+        }
+
+        function renderSidebar() {
+            const dates = Object.keys(data).sort((a, b) => b.localeCompare(a));
+            folderCount.textContent = dates.length;
+            if (dates.length === 0) {
+                dateList.innerHTML = '<div style="padding:1rem;color:var(--text-faint);font-size:0.85rem;text-align:center;">暂无文件</div>';
+            } else {
+                dateList.innerHTML = dates.map(d => {
+                    const count = (data[d] || []).length;
+                    const active = d === currentDate ? 'active' : '';
+                    return `<div class="date-item ${active}" data-date="${d}">
+                        <span class="info">
+                            <span class="main">${friendlyDate(d)}</span>
+                            <span class="sub">${count} 个单词</span>
+                        </span>
+                        <span class="count">${count}</span>
+                    </div>`;
+                }).join('');
+            }
+            const wbCount = getWrongbookCount();
+            wrongbookCount.textContent = wbCount;
+            wrongbookTopCount.textContent = `${wbCount} 个错词`;
+            renderStatsPanel();
+        }
+        function collectSearchResults(q) {
+            if (!q) return [];
+            const lower = q.toLowerCase();
+            const results = [];
+            Object.keys(data).sort((a, b) => b.localeCompare(a)).forEach(d => {
+                (data[d] || []).forEach((item, idx) => {
+                    const en = (item.en || '').toLowerCase();
+                    const cn = (item.cn || '').toLowerCase();
+                    if (en.includes(lower) || cn.includes(lower)) results.push({ item, date: d, idxInDate: idx });
+                });
+            });
+            return results;
+        }
+        function renderCardGrid() {
+            const q = searchQuery.trim();
+            if (q) {
+                const results = collectSearchResults(q);
+                viewTitle.textContent = `搜索「${q}」`;
+                viewSub.textContent = `共找到 ${results.length} 个结果（跨所有日期）`;
+                globalSearchHint.classList.add('show');
+                const byDate = {};
+                results.forEach(r => { byDate[r.date] = (byDate[r.date] || 0) + 1; });
+                const dateCount = Object.keys(byDate).length;
+                globalSearchHintText.textContent = `在 ${dateCount} 个日期文件里找到 ${results.length} 个匹配`;
+                if (results.length === 0) {
+                    cardGrid.innerHTML = `<div class="empty-view"><span class="big">🔍</span>没有找到匹配「${escapeHtml(q)}」的单词</div>`;
+                    return;
+                }
+                cardGrid.innerHTML = results.map(r => renderCardHtml(r.item, r.date, r.idxInDate, true)).join('');
+                return;
+            }
+            globalSearchHint.classList.remove('show');
+            const list = data[currentDate] || [];
+            viewTitle.textContent = friendlyDate(currentDate);
+            viewSub.textContent = `${list.length} 个单词`;
+            if (list.length === 0) {
+                cardGrid.innerHTML = `<div class="empty-view"><span class="big">📝</span>赶快加点单词进来啊 混蛋！！！</div>`;
+                return;
+            }
+            const sorted = [...list].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            cardGrid.innerHTML = sorted.map(item => {
+                const originalIdx = list.indexOf(item);
+                return renderCardHtml(item, currentDate, originalIdx, false);
+            }).join('');
+        }
+        function renderCardHtml(item, cardDate, idxInDate, isSearchResult) {
+            const en = escapeHtml(item.en);
+            const cnRaw = item.cn || '';
+            const cn = escapeHtml(cnRaw);
+            const ext = item.ext || {};
+            const hasExt = (ext.synonyms && ext.synonyms.trim()) || (ext.forms && ext.forms.trim()) || (ext.examples && ext.examples.trim());
+            const ek = `${cardDate}::${idxInDate}`;
+            const isOpen = expandedSet.has(ek);
+            const editing = editingMap.get(ek);
+            const wrongCount = getWrongCount(item.en);
+            const isDeepRed = wrongCount >= 3;
+            const safeEn = escapeHtml(item.en);
+
+            let wrongMarksHtml = '';
+            if (wrongCount > 0) {
+                const marks = [];
+                for (let i = 0; i < wrongCount; i++) {
+                    const deep = i >= 2;
+                    marks.push(`<span class="mark ${deep ? 'deep' : ''}">-1</span>`);
+                }
+                wrongMarksHtml = `<div class="wrong-marks"><span class="marks-label">❌ 错 ${wrongCount} 次</span>${marks.join('')}</div>`;
+            }
+
+            let extPanelHtml = '';
+            if (isOpen) {
+                if (editing) {
+                    extPanelHtml = `
+                        <div class="ext-panel">
+                            <div class="ext-section">
+                                <div class="ext-label"><span>🔁 同义替换</span></div>
+                                <div class="ext-edit-area">
+                                    <textarea data-field="synonyms" placeholder="例如：vague, obscure">${escapeHtml(editing.synonyms)}</textarea>
+                                </div>
+                            </div>
+                            <div class="ext-section">
+                                <div class="ext-label">🧬 单词变形 / 词性说明</div>
+                                <div class="ext-edit-area">
+                                    <textarea data-field="forms" placeholder="例如：ambiguity (n.), ambiguously (adv.)">${escapeHtml(editing.forms)}</textarea>
+                                </div>
+                            </div>
+                            <div class="ext-section">
+                                <div class="ext-label">📖 例句</div>
+                                <div class="ext-edit-area">
+                                    <textarea data-field="examples" placeholder="每行一个例句">${escapeHtml(editing.examples)}</textarea>
+                                </div>
+                            </div>
+                            <div class="ext-edit-actions">
+                                <button class="btn-mini cancel" data-action="cancel-edit" data-idx="${idxInDate}" data-date="${cardDate}">取消</button>
+                                <button class="btn-mini save" data-action="save-ext" data-idx="${idxInDate}" data-date="${cardDate}">保存</button>
+                            </div>
+                        </div>`;
+                } else {
+                    const synHtml = (ext.synonyms && ext.synonyms.trim())
+                        ? `<div class="ext-value">${escapeHtml(ext.synonyms)}</div>`
+                        : `<div class="ext-value placeholder">还没有同义替换</div>`;
+                    const formHtml = (ext.forms && ext.forms.trim())
+                        ? `<div class="ext-value">${escapeHtml(ext.forms)}</div>`
+                        : `<div class="ext-value placeholder">还没有变形信息</div>`;
+                    let examplesHtml = '';
+                    if (ext.examples && ext.examples.trim()) {
+                        examplesHtml = ext.examples.split('\n\n').filter(x => x.trim()).map(ex =>
+                            `<div class="ext-value example">"${escapeHtml(ex.trim())}"</div>`
+                        ).join('');
+                    } else {
+                        examplesHtml = `<div class="ext-value placeholder">还没有例句</div>`;
+                    }
+                    extPanelHtml = `
+                        <div class="ext-panel">
+                            <div class="ext-section">
+                                <div class="ext-label">🔁 同义替换</div>
+                                ${synHtml}
+                            </div>
+                            <div class="ext-section">
+                                <div class="ext-label">🧬 单词变形 / 词性说明</div>
+                                ${formHtml}
+                            </div>
+                            <div class="ext-section">
+                                <div class="ext-label">📖 例句</div>
+                                ${examplesHtml}
+                            </div>
+                            <div class="ext-edit-actions">
+                                <button class="btn-mini cancel" data-action="edit-ext" data-idx="${idxInDate}" data-date="${cardDate}">✏️ 编辑</button>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            const isToday = cardDate === todayKey();
+            const dateTagHtml = isSearchResult ? `<div class="card-date-tag ${isToday ? 'today' : ''}">${shortDateTag(cardDate)}</div>` : '';
+
+            let actionsHtml = '';
+            if (isSearchResult) {
+                actionsHtml = `
+                    <button class="mini-btn" data-action="jump-to-date" data-date="${cardDate}">📅 去这一天</button>
+                    <button class="mini-btn ${isOpen ? 'open' : ''}" data-action="toggle-ext" data-idx="${idxInDate}" data-date="${cardDate}">💡 拓展${hasExt ? '<span class="dot"></span>' : ''}</button>`;
+            } else {
+                actionsHtml = `
+                    <button class="mini-btn ${isOpen ? 'open' : ''}" data-action="toggle-ext" data-idx="${idxInDate}" data-date="${cardDate}">💡 拓展${hasExt ? '<span class="dot"></span>' : ''}</button>
+                    <button class="mini-btn del" data-action="delete" data-idx="${idxInDate}" data-date="${cardDate}" title="删除">✕</button>`;
+            }
+
+            return `<div class="big-card" data-idx="${idxInDate}" data-date="${cardDate}">
+                ${dateTagHtml}
+                <div class="word-with-audio">
+                    <span class="word-hover-trigger ${isDeepRed ? 'deep-red' : ''}"
+                          data-cn="${cn}" data-syn="${escapeHtml(ext.synonyms || '')}" data-forms="${escapeHtml(ext.forms || '')}">${en}</span>
+                    <button class="audio-btn" data-action="speak" data-word="${safeEn}" title="朗读">🔊</button>
+                </div>
+                ${cnRaw ? `<div class="card-cn">${cn}</div>` : `<div class="card-cn empty">（未填写备注）</div>`}
+                ${wrongMarksHtml}
+                <div class="card-actions">${actionsHtml}</div>
+                ${extPanelHtml}
+            </div>`;
+        }
+        function renderHome() {
+            renderSidebar();
+            renderCardGrid();
+        }
+
+        let tooltipShowTimer = null;
+        let tooltipHideTimer = null;
+        let currentTooltipTarget = null;
+        function buildTooltipContent(trigger) {
+            const cn = trigger.getAttribute('data-cn') || '';
+            const syn = trigger.getAttribute('data-syn') || '';
+            const forms = trigger.getAttribute('data-forms') || '';
+            let html = '';
+            if (cn) html += `<div class="gt-cn">${cn}</div>`;
+            else html += `<div class="gt-cn placeholder">（还没有填写释义）</div>`;
+            const extParts = [];
+            if (syn) extParts.push(`<div class="gt-ext-label">🔁 同义替换</div><div class="gt-ext-value">${syn}</div>`);
+            if (forms) extParts.push(`<div class="gt-ext-label" style="margin-top:0.5rem;">🧬 词性 / 变形</div><div class="gt-ext-value">${forms}</div>`);
+            if (extParts.length) html += `<div class="gt-ext">${extParts.join('')}</div>`;
+            return html;
+        }
+        function positionTooltip(trigger) {
+            const rect = trigger.getBoundingClientRect();
+            const tipRect = glassTooltip.getBoundingClientRect();
+            const gap = 12;
+            let top = rect.top - tipRect.height - gap;
+            let left = rect.left;
+            if (top < 8) top = rect.bottom + gap;
+            if (left + tipRect.width > window.innerWidth - 12) left = window.innerWidth - tipRect.width - 12;
+            if (left < 12) left = 12;
+            glassTooltip.style.top = top + 'px';
+            glassTooltip.style.left = left + 'px';
+        }
+        function showTooltip(trigger) {
+            clearTimeout(tooltipHideTimer);
+            currentTooltipTarget = trigger;
+            glassTooltip.innerHTML = buildTooltipContent(trigger);
+            glassTooltip.style.top = '-9999px';
+            glassTooltip.style.left = '-9999px';
+            glassTooltip.classList.add('show');
+            requestAnimationFrame(() => positionTooltip(trigger));
+        }
+        function hideTooltip() {
+            clearTimeout(tooltipShowTimer);
+            glassTooltip.classList.remove('show');
+            currentTooltipTarget = null;
+        }
+        function bindTooltipEvents() {
+            cardGrid.addEventListener('mouseover', e => {
+                const trigger = e.target.closest('.word-hover-trigger');
+                if (!trigger || trigger === currentTooltipTarget) return;
+                if (currentDevice === 'mobile') return;
+                clearTimeout(tooltipHideTimer);
+                clearTimeout(tooltipShowTimer);
+                tooltipShowTimer = setTimeout(() => showTooltip(trigger), 100);
+            });
+            cardGrid.addEventListener('mouseout', e => {
+                const trigger = e.target.closest('.word-hover-trigger');
+                if (!trigger) return;
+                const related = e.relatedTarget;
+                if (related && trigger.contains(related)) return;
+                clearTimeout(tooltipShowTimer);
+                tooltipHideTimer = setTimeout(() => {
+                    if (!trigger.matches(':hover')) hideTooltip();
+                }, 80);
+            });
+            window.addEventListener('scroll', () => {
+                if (currentTooltipTarget && glassTooltip.classList.contains('show')) positionTooltip(currentTooltipTarget);
+            }, true);
+            window.addEventListener('resize', () => {
+                if (currentTooltipTarget && glassTooltip.classList.contains('show')) positionTooltip(currentTooltipTarget);
+            });
+            document.addEventListener('click', e => {
+                if (currentTooltipTarget && !e.target.closest('.word-hover-trigger')) hideTooltip();
+            });
+        }
+
+        function openModePicker(dateKey) {
+            reviewDate = dateKey;
+            const list = data[dateKey] || [];
+            modePickerSub.textContent = `${friendlyDate(dateKey)} · ${list.length} 个单词`;
+            modePickerMask.classList.add('show');
+        }
+        function closeModePicker() { modePickerMask.classList.remove('show'); }
+        function startReview(mode) {
+            reviewMode = mode;
+            const list = data[reviewDate] || [];
+            reviewState = {};
+            if (mode === 'translate') {
+                list.forEach((_, i) => { reviewState[i] = { input: '', status: 'pending' }; });
+            } else if (mode === 'flashcard') {
+                list.forEach((_, i) => { reviewState[i] = { flipped: false, status: 'pending', reward: null }; });
+                reviewState._index = 0;
+            } else if (mode === 'choice') {
+                list.forEach((item, i) => {
+                    reviewState[i] = { options: generateChoices(item, list), picked: null, status: 'pending', correctText: item.cn || '' };
+                });
+            } else if (mode === 'complete') {
+                list.forEach((item, i) => { reviewState[i] = { input: '', status: 'pending' }; });
+            }
+            hideAllPages();
+            pageReview.classList.add('active');
+            window.scrollTo(0, 0);
+            hideTooltip();
+            closeModePicker();
+            renderReviewPage();
+        }
+        function generateChoices(correctItem, allList) {
+            const correctCn = (correctItem.cn || '').trim() || '（无备注）';
+            const pool = allList.filter(x => x !== correctItem && (x.cn || '').trim()).map(x => x.cn.trim());
+            const used = new Set([correctCn]);
+            const distractors = [];
+            const shuffled = pool.sort(() => Math.random() - 0.5);
+            for (const d of shuffled) {
+                if (distractors.length >= 3) break;
+                if (used.has(d)) continue;
+                used.add(d);
+                distractors.push(d);
+            }
+            const options = [correctCn, ...distractors];
+            while (options.length < 4) options.push('—— 无 ——');
+            return options.sort(() => Math.random() - 0.5);
+        }
+        function renderReviewPage() {
+            const list = data[reviewDate] || [];
+            const total = list.length;
+            let done = 0, correct = 0, wrong = 0;
+            Object.keys(reviewState).forEach(k => {
+                if (k === '_index') return;
+                const s = reviewState[k];
+                if (!s) return;
+                if (s.status === 'correct') { done++; correct++; }
+                else if (s.status === 'wrong') { done++; wrong++; }
+            });
+            reviewTitle.textContent = friendlyDate(reviewDate);
+            reviewSub.textContent = `${total} 个单词`;
+            const modeLabels = { translate: '📝 翻译', flashcard: '🎴 抽认卡', choice: '🔘 选择题', complete: '⌨️ 补全单词' };
+            reviewModePill.textContent = modeLabels[reviewMode] || '📝 翻译';
+            reviewProgressPill.textContent = `${done}/${total} · ✅ ${correct}`;
+            statDone.textContent = `📊 ${done}/${total}`;
+            statCorrect.textContent = `✅ ${correct}`;
+            statWrong.textContent = `❌ ${wrong}`;
+            if (list.length === 0) {
+                reviewList.innerHTML = `<div class="empty-view"><span class="big">📭</span>这一天还没有单词，无法复习</div>`;
+                return;
+            }
+            if (reviewMode === 'translate') renderTranslateMode(list);
+            else if (reviewMode === 'flashcard') renderFlashcardMode(list);
+            else if (reviewMode === 'choice') renderChoiceMode(list);
+            else if (reviewMode === 'complete') renderCompleteMode(list);
+        }
+        function renderTranslateMode(list) {
+            const sorted = [...list].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            reviewList.innerHTML = sorted.map(item => {
+                const originalIdx = list.indexOf(item);
+                const en = escapeHtml(item.en);
+                const cnRaw = item.cn || '';
+                const cn = escapeHtml(cnRaw);
+                const st = reviewState[originalIdx] || { input: '', status: 'pending' };
+                const inputVal = escapeHtml(st.input || '');
+                const safeEn = escapeHtml(item.en);
+                let feedbackHtml = '';
+                if (st.status === 'correct') feedbackHtml = `<div class="feedback correct"><div class="fb-head">✅ 正确！</div><div><span class="fb-label">完整释义：</span><span class="fb-answer">${cn || '（无备注）'}</span></div></div>`;
+                else if (st.status === 'wrong') feedbackHtml = `<div class="feedback wrong"><div class="fb-head">❌ 错误 · 已记入错题本</div><div><span class="fb-label">你的答案：</span>${escapeHtml(st.input)}</div><div style="margin-top:0.35rem;"><span class="fb-label">正确答案：</span><span class="fb-answer">${cn || '（无备注）'}</span></div></div>`;
+                const disabled = st.status !== 'pending' ? 'disabled' : '';
+                const btnText = st.status === 'pending' ? '检查' : '已检查';
+                return `<div class="review-card">
+                    <div class="review-row-top">
+                        <div class="review-en">${en}</div>
+                        <button class="audio-btn" data-action="speak" data-word="${safeEn}" title="朗读">🔊</button>
+                    </div>
+                    <div class="review-row">
+                        <input type="text" class="review-input" data-idx="${originalIdx}" placeholder="输入中文释义..." value="${inputVal}" ${disabled}>
+                        <button class="btn-check" data-idx="${originalIdx}" ${disabled}>${btnText}</button>
+                    </div>
+                    ${feedbackHtml}
+                </div>`;
+            }).join('');
+        }
+
+        function renderFlashcardMode(list) {
+            const sorted = [...list].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            if (sorted.length === 0) {
+                reviewList.innerHTML = `<div class="empty-view"><span class="big">📭</span>这一天还没有单词</div>`;
+                return;
+            }
+            let idx = reviewState._index || 0;
+            if (idx >= sorted.length) idx = sorted.length - 1;
+            if (idx < 0) idx = 0;
+            const item = sorted[idx];
+            const originalIdx = list.indexOf(item);
+            const st = reviewState[originalIdx] || { flipped: false, status: 'pending', reward: null };
+            const en = escapeHtml(item.en);
+            const cn = escapeHtml(item.cn || '（无备注）');
+            const safeEn = escapeHtml(item.en);
+            const isFlipped = !!st.flipped;
+            const isWrong = st.status === 'wrong';
+            const isReward = st.status === 'correct' && st.reward;
+
+            let backHtml = '';
+            if (isReward) {
+                backHtml = `
+                    <span class="reward-emoji">${st.reward.emoji}</span>
+                    <div class="reward-title">✅ 记住啦！</div>
+                    <div class="reward-text">${escapeHtml(st.reward.text)}</div>
+                `;
+            } else {
+                backHtml = `
+                    <div class="flashcard-cn">${cn}</div>
+                    <div class="flashcard-hint">自我评估一下</div>
+                `;
+            }
+
+            let controlsHtml = '';
+            if (st.status === 'pending') {
+                controlsHtml = `
+                    <button class="fc-btn success" data-action="fc-known">✓ 记住了</button>
+                    <button class="fc-btn warn" data-action="fc-unknown">✗ 没记住</button>
+                `;
+            } else {
+                const isLast = idx >= sorted.length - 1;
+                controlsHtml = `
+                    <button class="fc-btn ghost" data-action="fc-prev" ${idx === 0 ? 'disabled' : ''}>← 上一张</button>
+                    <button class="fc-btn primary" data-action="fc-next">${isLast ? '完成 →' : '下一张 →'}</button>
+                `;
+            }
+
+            reviewList.innerHTML = `
+                <div class="flashcard-wrap">
+                    <div class="flashcard-progress">第 ${idx + 1} / ${sorted.length} 张</div>
+                    <div class="flashcard ${isFlipped ? 'flipped' : ''} ${isWrong ? 'wrong' : ''} ${isReward ? 'reward' : ''}" id="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="flashcard-word">${en}</div>
+                                <button class="audio-btn" data-action="speak" data-word="${safeEn}" title="朗读"
+                                        style="width:42px;height:42px;font-size:1.2rem;margin-top:0.6rem;">🔊</button>
+                                <div class="flashcard-hint">点击卡片翻面看释义</div>
+                            </div>
+                            <div class="flashcard-back">
+                                ${backHtml}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-controls">
+                        ${controlsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function flashcardToggle() {
+            const sorted = [...(data[reviewDate] || [])].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            const idx = reviewState._index || 0;
+            const item = sorted[idx];
+            if (!item) return;
+            const origIdx = (data[reviewDate] || []).indexOf(item);
+            if (!reviewState[origIdx]) return;
+            if (reviewState[origIdx].status !== 'pending') return;
+
+            const card = document.getElementById('flashcard');
+            if (!card) { renderReviewPage(); return; }
+
+            reviewState[origIdx].flipped = !reviewState[origIdx].flipped;
+            card.classList.toggle('flipped', reviewState[origIdx].flipped);
+        }
+
+        function flashcardMove(dir) {
+            const sorted = [...(data[reviewDate] || [])].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            let idx = reviewState._index || 0;
+            const next = idx + dir;
+            if (next < 0) return;
+            if (next >= sorted.length) {
+                showToast('🎉 已到最后一张！', 'success');
+                return;
+            }
+            reviewState._index = next;
+            renderReviewPage();
+        }
+
+        function flashcardEvaluate(known) {
+            const sorted = [...(data[reviewDate] || [])].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            const idx = reviewState._index || 0;
+            const item = sorted[idx];
+            if (!item) return;
+            const origIdx = (data[reviewDate] || []).indexOf(item);
+            if (!reviewState[origIdx]) return;
+            if (reviewState[origIdx].status !== 'pending') return;
+
+            const correct = !!known;
+            reviewState[origIdx].status = correct ? 'correct' : 'wrong';
+            updateStatsAfterAnswer(correct);
+
+            const card = document.getElementById('flashcard');
+            let delay = 0;
+
+            if (correct) {
+                reviewState[origIdx].reward = pickRandomReward();
+                reviewState[origIdx].flipped = true;
+
+                if (card) {
+                    const backEl = card.querySelector('.flashcard-back');
+                    if (backEl) {
+                        const r = reviewState[origIdx].reward;
+                        backEl.innerHTML = `
+                            <span class="reward-emoji">${r.emoji}</span>
+                            <div class="reward-title">✅ 记住啦！</div>
+                            <div class="reward-text">${escapeHtml(r.text)}</div>
+                        `;
+                    }
+                    card.classList.add('reward');
+                    requestAnimationFrame(() => {
+                        card.classList.add('flipped');
+                    });
+                }
+                delay = 750;
+            } else {
+                reviewState[origIdx].flipped = false;
+                const isNew = recordWrong(item.en, item.cn || '');
+                if (isNew) showToast(`已记入错题本：${item.en}`, 'error');
+                else showToast(`今天已记过：${item.en}`, 'warn');
+                if (card) card.classList.add('wrong');
+                delay = 100;
+            }
+
+            setTimeout(() => {
+                const wrap = document.querySelector('.flashcard-wrap');
+                if (wrap) {
+                    const controls = wrap.querySelector('.flashcard-controls');
+                    if (controls) {
+                        const isLast = idx >= sorted.length - 1;
+                        controls.innerHTML = `
+                            <button class="fc-btn ghost" data-action="fc-prev" ${idx === 0 ? 'disabled' : ''}>← 上一张</button>
+                            <button class="fc-btn primary" data-action="fc-next">${isLast ? '完成 →' : '下一张 →'}</button>
+                        `;
+                    }
+                }
+                renderStatsPanel();
+                updateReviewProgressOnly();
+            }, delay);
+        }
+
+        function updateReviewProgressOnly() {
+            const list = data[reviewDate] || [];
+            const total = list.length;
+            let done = 0, correct = 0, wrong = 0;
+            Object.keys(reviewState).forEach(k => {
+                if (k === '_index') return;
+                const s = reviewState[k];
+                if (!s) return;
+                if (s.status === 'correct') { done++; correct++; }
+                else if (s.status === 'wrong') { done++; wrong++; }
+            });
+            reviewProgressPill.textContent = `${done}/${total} · ✅ ${correct}`;
+            statDone.textContent = `📊 ${done}/${total}`;
+            statCorrect.textContent = `✅ ${correct}`;
+            statWrong.textContent = `❌ ${wrong}`;
+        }
+
+        function renderChoiceMode(list) {
+            const sorted = [...list].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            reviewList.innerHTML = sorted.map(item => {
+                const originalIdx = list.indexOf(item);
+                const en = escapeHtml(item.en);
+                const safeEn = escapeHtml(item.en);
+                const st = reviewState[originalIdx] || { options: [], picked: null, status: 'pending', correctText: item.cn || '' };
+                const options = st.options || [];
+                const picked = st.picked;
+                const isAnswered = st.status !== 'pending';
+                const optionsHtml = options.map((opt, i) => {
+                    const key = String.fromCharCode(65 + i);
+                    let cls = 'mc-option';
+                    if (isAnswered) {
+                        cls += ' disabled';
+                        if (opt === st.correctText) cls += ' correct';
+                        else if (opt === picked) cls += ' wrong';
+                    }
+                    return `<button class="${cls}" data-action="mc-pick" data-idx="${originalIdx}" data-opt="${escapeHtml(opt)}">
+                        <span class="mc-key">${key}</span>
+                        <span class="mc-text">${escapeHtml(opt)}</span>
+                    </button>`;
+                }).join('');
+                let feedbackHtml = '';
+                if (isAnswered) {
+                    if (st.status === 'correct') feedbackHtml = `<div class="feedback correct"><div class="fb-head">✅ 选对了！</div></div>`;
+                    else feedbackHtml = `<div class="feedback wrong"><div class="fb-head">❌ 选错了</div><div>正确答案：<span class="fb-answer">${escapeHtml(st.correctText)}</span></div></div>`;
+                }
+                return `<div class="mc-card">
+                    <div class="mc-word">${en}
+                        <button class="audio-btn" data-action="speak" data-word="${safeEn}" title="朗读">🔊</button>
+                    </div>
+                    <div class="mc-sub">选择正确的中文释义</div>
+                    <div class="mc-options">${optionsHtml}</div>
+                    ${feedbackHtml}
+                </div>`;
+            }).join('');
+        }
+        function pickChoice(idx, opt) {
+            const list = data[reviewDate] || [];
+            const item = list[idx];
+            if (!item) return;
+            const st = reviewState[idx];
+            if (!st || st.status !== 'pending') return;
+            st.picked = opt;
+            const correct = opt === st.correctText;
+            st.status = correct ? 'correct' : 'wrong';
+            updateStatsAfterAnswer(correct);
+            if (!correct) {
+                const isNew = recordWrong(item.en, item.cn || '');
+                if (isNew) showToast(`已记入错题本：${item.en}`, 'error');
+                else showToast(`今天已记过：${item.en}`, 'warn');
+            }
+            renderReviewPage();
+            renderStatsPanel();
+        }
+
+        function renderCompleteMode(list) {
+            const sorted = [...list].sort((a, b) => (b.addedAt || 0) - (a.addedAt || 0));
+            reviewList.innerHTML = sorted.map(item => {
+                const originalIdx = list.indexOf(item);
+                const word = (item.en || '').toLowerCase();
+                const cn = escapeHtml(item.cn || '（无备注）');
+                const st = reviewState[originalIdx] || { input: '', status: 'pending' };
+                const inputVal = escapeHtml(st.input || '');
+                const isAnswered = st.status !== 'pending';
+                const lettersHtml = word.split('').map((ch, i) => {
+                    let cls = 'cw-letter';
+                    if (i === 0) cls += ' hint-letter';
+                    if (isAnswered) cls += ' ' + (st.status === 'correct' ? 'correct' : 'wrong');
+                    return `<span class="${cls}">${i === 0 ? escapeHtml(ch.toUpperCase()) : ''}</span>`;
+                }).join('');
+                let feedbackHtml = '';
+                if (isAnswered) {
+                    if (st.status === 'correct') feedbackHtml = `<div class="feedback correct"><div class="fb-head">✅ 拼对了！</div></div>`;
+                    else feedbackHtml = `<div class="feedback wrong"><div class="fb-head">❌ 拼错了</div><div>正确答案：<span class="fb-answer">${escapeHtml(item.en)}</span></div></div>`;
+                }
+                return `<div class="cw-card">
+                    <div class="cw-cn">${cn}</div>
+                    <div class="cw-hint">首字母已给出，请补全这个单词（${word.length} 个字母）</div>
+                    <div class="cw-letters">${lettersHtml}</div>
+                    <div class="cw-input-wrap">
+                        <input type="text" class="cw-input" data-idx="${originalIdx}" placeholder="输入完整单词..."
+                               value="${inputVal}" ${isAnswered ? 'disabled' : ''} autocomplete="off" spellcheck="false">
+                        <button class="btn-check" data-action="cw-check" data-idx="${originalIdx}" ${isAnswered ? 'disabled' : ''}>${isAnswered ? '已检查' : '检查'}</button>
+                    </div>
+                    ${feedbackHtml}
+                </div>`;
+            }).join('');
+        }
+        function checkTranslateAnswer(idx) {
+            const list = data[reviewDate] || [];
+            const item = list[idx];
+            if (!item) return;
+            const st = reviewState[idx];
+            if (!st || st.status !== 'pending') return;
+            const inputEl = reviewList.querySelector(`.review-input[data-idx="${idx}"]`);
+            const userInput = inputEl ? inputEl.value.trim() : '';
+            if (!userInput) { if (inputEl) inputEl.focus(); showToast('请先输入答案', 'warn'); return; }
+            st.input = userInput;
+            const correct = isAnswerCorrect(userInput, item.cn || '');
+            st.status = correct ? 'correct' : 'wrong';
+            updateStatsAfterAnswer(correct);
+            if (!correct) {
+                const isNew = recordWrong(item.en, item.cn || '');
+                if (isNew) showToast(`已记入错题本：${item.en}`, 'error');
+                else showToast(`今天已记过：${item.en}`, 'warn');
+            }
+            renderReviewPage();
+            renderStatsPanel();
+        }
+        function checkCompleteAnswer(idx) {
+            const list = data[reviewDate] || [];
+            const item = list[idx];
+            if (!item) return;
+            const st = reviewState[idx];
+            if (!st || st.status !== 'pending') return;
+            const inputEl = reviewList.querySelector(`.cw-input[data-idx="${idx}"]`);
+            const userInput = inputEl ? inputEl.value.trim().toLowerCase() : '';
+            if (!userInput) { if (inputEl) inputEl.focus(); showToast('请输入完整单词', 'warn'); return; }
+            st.input = userInput;
+            const correct = userInput === (item.en || '').toLowerCase().trim();
+            st.status = correct ? 'correct' : 'wrong';
+            updateStatsAfterAnswer(correct);
+            if (!correct) {
+                const isNew = recordWrong(item.en, item.cn || '');
+                if (isNew) showToast(`已记入错题本：${item.en}`, 'error');
+                else showToast(`今天已记过：${item.en}`, 'warn');
+            }
+            renderReviewPage();
+            renderStatsPanel();
+        }
+
+        function renderWrongbookPage() {
+            const items = Object.values(wrongbook).sort((a, b) => b.count - a.count);
+            wrongbookTopCount.textContent = `${items.length} 个错词`;
+            if (items.length === 0) {
+                wrongbookList.innerHTML = `<div class="wrongbook-empty"><span class="big">🎉</span>还没有错题，继续保持！</div>`;
+                return;
+            }
+            wrongbookList.innerHTML = items.map(item => {
+                const en = escapeHtml(item.en);
+                const safeEn = escapeHtml(item.en);
+                const cnRaw = item.cn || '';
+                const cn = escapeHtml(cnRaw);
+                const count = item.count;
+                const isDeep = count >= 3;
+                const marks = [];
+                for (let i = 0; i < count; i++) {
+                    const deep = i >= 2;
+                    marks.push(`<span class="wb-mark ${deep ? 'deep' : ''}">-1</span>`);
+                }
+                const datesStr = (item.dates || []).slice(-5).join(' · ');
+                return `<div class="wrongbook-card ${isDeep ? 'deep' : ''}">
+                    <div class="wb-body">
+                        <div class="wb-en">${en}
+                            <button class="audio-btn" data-action="speak" data-word="${safeEn}" title="朗读" style="width:26px;height:26px;font-size:0.85rem;">🔊</button>
+                        </div>
+                        ${cnRaw ? `<div class="wb-cn">${cn}</div>` : ''}
+                        <div class="wb-marks">
+                            <span style="font-size:0.72rem;font-weight:800;color:var(--danger);margin-right:0.2rem;">错 ${count} 次</span>
+                            ${marks.join('')}
+                        </div>
+                        ${datesStr ? `<div class="wb-dates">📅 ${datesStr}</div>` : ''}
+                    </div>
+                    <button class="wb-clear-btn" data-en="${en}">移除</button>
+                </div>`;
+            }).join('');
+        }
+
+        function hideAllPages() {
+            pageHome.classList.remove('active');
+            pageReview.classList.remove('active');
+            pageWrongbook.classList.remove('active');
+        }
+        function goHome() {
+            hideAllPages();
+            pageHome.classList.add('active');
+            window.scrollTo(0, 0);
+            hideTooltip();
+            renderSidebar();
+            closeMobileSidebar();
+        }
+        function goWrongbook() {
+            renderWrongbookPage();
+            hideAllPages();
+            pageWrongbook.classList.add('active');
+            window.scrollTo(0, 0);
+            hideTooltip();
+            closeMobileSidebar();
+        }
+
+        // ★ 添加单词：同步、瞬间完成
+        function addWord() {
+            const en = enInput.value.trim();
+            const cn = cnInput.value.trim();
+            enBox.classList.remove('error');
+            cnBox.classList.remove('error');
+            if (!en) {
+                enBox.classList.add('error');
+                enInput.focus();
+                showToast('请输入英文单词', 'warn');
+                setTimeout(() => enBox.classList.remove('error'), 1200);
+                return;
+            }
+            const today = todayKey();
+            if (!data[today]) data[today] = [];
+            const exists = data[today].some(w => w.en.toLowerCase() === en.toLowerCase() && (w.cn || '') === cn);
+            if (exists) {
+                cnBox.classList.add('error');
+                showToast('这个单词已存在（同释义）', 'warn');
+                setTimeout(() => cnBox.classList.remove('error'), 1200);
+                return;
+            }
+            // 拓展字段默认空
+            data[today].push({ en, cn, ext: { synonyms: '', forms: '', examples: '' }, addedAt: Date.now() });
+            if (!save()) return;
+            if (searchQuery) {
+                searchInput.value = ''; searchQuery = '';
+                searchWrap.classList.remove('has-text');
+                globalSearchHint.classList.remove('show');
+            }
+            currentDate = today;
+            renderHome();
+            enInput.value = '';
+            cnInput.value = '';
+            enInput.focus();
+            showToast(`已添加：${en}`, 'success');
+        }
+
+        function deleteWordByIndex(dateKey, idx) {
+            const list = data[dateKey] || [];
+            if (idx < 0 || idx >= list.length) return;
+            const removed = list.splice(idx, 1)[0];
+            expandedSet.delete(`${dateKey}::${idx}`);
+            editingMap.delete(`${dateKey}::${idx}`);
+            save();
+            renderHome();
+            hideTooltip();
+            showToast(`已删除：${removed.en}`, 'info');
+        }
+        function clearCurrentDate() {
+            const list = data[currentDate] || [];
+            if (list.length === 0) { showToast('这一天没有单词', 'warn'); return; }
+            if (confirm(`确定清空「${friendlyDate(currentDate)}」的全部单词？`)) {
+                data[currentDate] = [];
+                expandedSet.clear();
+                editingMap.clear();
+                save();
+                renderHome();
+                hideTooltip();
+                showToast('已清空', 'info');
+            }
+        }
+        function toggleExt(dateKey, idx) {
+            const ek = `${dateKey}::${idx}`;
+            if (expandedSet.has(ek)) {
+                expandedSet.delete(ek);
+                editingMap.delete(ek);
+            } else expandedSet.add(ek);
+            renderCardGrid();
+        }
+        function startEditExt(dateKey, idx) {
+            const list = data[dateKey] || [];
+            const item = list[idx];
+            if (!item) return;
+            const ext = item.ext || {};
+            editingMap.set(`${dateKey}::${idx}`, {
+                synonyms: ext.synonyms || '',
+                forms: ext.forms || '',
+                examples: ext.examples || ''
+            });
+            renderCardGrid();
+            setTimeout(() => {
+                const ta = cardGrid.querySelector(`.ext-edit-area textarea[data-field="synonyms"]`);
+                if (ta) ta.focus();
+            }, 30);
+        }
+        function cancelEditExt(dateKey, idx) {
+            editingMap.delete(`${dateKey}::${idx}`);
+            renderCardGrid();
+        }
+        function saveExt(dateKey, idx) {
+            const list = data[dateKey] || [];
+            const item = list[idx];
+            if (!item) return;
+            const ek = `${dateKey}::${idx}`;
+            const editing = editingMap.get(ek);
+            if (!editing) return;
+            const card = cardGrid.querySelector(`.big-card[data-idx="${idx}"][data-date="${dateKey}"]`);
+            const synEl = card ? card.querySelector(`.ext-edit-area textarea[data-field="synonyms"]`) : null;
+            const formEl = card ? card.querySelector(`.ext-edit-area textarea[data-field="forms"]`) : null;
+            const exEl = card ? card.querySelector(`.ext-edit-area textarea[data-field="examples"]`) : null;
+            const synonyms = synEl ? synEl.value.trim() : editing.synonyms;
+            const forms = formEl ? formEl.value.trim() : editing.forms;
+            const examples = exEl ? exEl.value.trim() : editing.examples;
+            item.ext = Object.assign({}, item.ext, { synonyms, forms, examples });
+            editingMap.delete(ek);
+            if (save()) showToast('已保存拓展', 'success');
+            renderCardGrid();
+        }
+
+        let pendingDate = null;
+        function openModal(dateKey) {
+            pendingDate = dateKey;
+            modalTitle.textContent = friendlyDate(dateKey);
+            modalMask.classList.add('show');
+        }
+        function closeModal() { modalMask.classList.remove('show'); pendingDate = null; }
+
+        function openProfileModal() {
+            if (!currentUser) return;
+            const users = getUsers();
+            const u = users[currentUser];
+            if (!u) return;
+            tempAvatarData = u.avatar || null;
+            tempAvatarColor = u.avatarColor || AVATAR_COLORS[0];
+            tempNickname = u.displayName || currentUser;
+            nicknameInput.value = tempNickname;
+            renderAvatarPreview();
+            renderColorSwatches();
+            switchProfileTab('avatar');
+            oldPassword.value = ''; newPassword.value = ''; newPassword2.value = '';
+            updatePwHint();
+            currentDeviceLabel.textContent = currentDevice === 'mobile' ? '手机端' : '电脑端';
+            profileMask.classList.add('show');
+        }
+        function closeProfileModal() { profileMask.classList.remove('show'); }
+        function renderAvatarPreview() {
+            avatarPreview.innerHTML = '';
+            avatarPreview.style.background = '';
+            if (tempAvatarData) {
+                const img = document.createElement('img');
+                img.src = tempAvatarData;
+                avatarPreview.appendChild(img);
+            } else {
+                const color = tempAvatarColor || AVATAR_COLORS[0];
+                avatarPreview.style.background = color;
+                const name = tempNickname || currentUser || '?';
+                avatarPreview.textContent = name.charAt(0).toUpperCase();
+            }
+        }
+        function renderColorSwatches() {
+            colorSwatches.innerHTML = AVATAR_COLORS.map(c => {
+                const selected = (!tempAvatarData && c === tempAvatarColor) ? 'selected' : '';
+                return `<div class="color-swatch ${selected}" data-color="${c}" style="background:${c}"></div>`;
+            }).join('');
+        }
+        function switchProfileTab(tab) {
+            if (tab === 'avatar') {
+                ptabAvatar.classList.add('active'); ptabPassword.classList.remove('active'); ptabDevice.classList.remove('active');
+                avatarPanel.classList.remove('hidden'); passwordPanel.classList.add('hidden'); devicePanel.classList.add('hidden');
+            } else if (tab === 'password') {
+                ptabPassword.classList.add('active'); ptabAvatar.classList.remove('active'); ptabDevice.classList.remove('active');
+                avatarPanel.classList.add('hidden'); passwordPanel.classList.remove('hidden'); devicePanel.classList.add('hidden');
+            } else if (tab === 'device') {
+                ptabDevice.classList.add('active'); ptabAvatar.classList.remove('active'); ptabPassword.classList.remove('active');
+                avatarPanel.classList.add('hidden'); passwordPanel.classList.add('hidden'); devicePanel.classList.remove('hidden');
+                currentDeviceLabel.textContent = currentDevice === 'mobile' ? '手机端' : '电脑端';
+            }
+        }
+        function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                if (!file.type.startsWith('image/')) { reject(new Error('不是图片文件')); return; }
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const SIZE = 200;
+                        const canvas = document.createElement('canvas');
+                        canvas.width = SIZE; canvas.height = SIZE;
+                        const ctx = canvas.getContext('2d');
+                        const minSide = Math.min(img.width, img.height);
+                        const sx = (img.width - minSide) / 2;
+                        const sy = (img.height - minSide) / 2;
+                        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, SIZE, SIZE);
+                        resolve(canvas.toDataURL('image/jpeg', 0.85));
+                    };
+                    img.onerror = () => reject(new Error('图片加载失败'));
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => reject(new Error('读取失败'));
+                reader.readAsDataURL(file);
+            });
+        }
+        function handleAvatarFile(file) {
+            if (!file) return;
+            if (file.size > 10 * 1024 * 1024) { showToast('图片太大了，请选 10MB 以下的', 'error'); return; }
+            compressImage(file).then(dataUrl => {
+                tempAvatarData = dataUrl;
+                renderAvatarPreview();
+                renderColorSwatches();
+                showToast('图片已就绪，点保存生效', 'success');
+            }).catch(err => { showToast('图片处理失败：' + err.message, 'error'); });
+        }
+        function saveAvatarProfile() {
+            if (!currentUser) return;
+            const users = getUsers();
+            const u = users[currentUser];
+            if (!u) return;
+            const newNick = (nicknameInput.value || '').trim() || currentUser;
+            if (newNick.length > 20) { showToast('昵称太长（≤20字）', 'error'); return; }
+            if (tempAvatarData) { u.avatar = tempAvatarData; u.avatarColor = tempAvatarColor || AVATAR_COLORS[0]; }
+            else { delete u.avatar; u.avatarColor = tempAvatarColor || AVATAR_COLORS[0]; }
+            u.displayName = newNick;
+            if (!saveUsers(users)) { showToast('保存失败', 'error'); return; }
+            applyUserProfile();
+            closeProfileModal();
+            showToast('个人资料已保存 ✓', 'success');
+        }
+        function resetAvatarToDefault() {
+            tempAvatarData = null;
+            tempAvatarColor = AVATAR_COLORS[0];
+            renderAvatarPreview();
+            renderColorSwatches();
+            showToast('已恢复默认（点保存生效）', 'info');
+        }
+        function updatePwHint() {
+            const p = newPassword.value;
+            const s = getPasswordStrength(p);
+            if (p.length === 0) { pwHint.className = 'pw-hint'; pwHint.textContent = '新密码由数字和字母组成，至少8位'; }
+            else if (s === 'too-short') { pwHint.className = 'pw-hint weak'; pwHint.textContent = '新密码太短了，至少8位'; }
+            else if (s === 'simple') { pwHint.className = 'pw-hint weak'; pwHint.textContent = '新密码过于简单，请同时包含字母和数字'; }
+            else { pwHint.className = 'pw-hint ok'; pwHint.textContent = '新密码符合要求 ✓'; }
+        }
+        function saveNewPassword() {
+            if (!currentUser) return;
+            const users = getUsers();
+            const u = users[currentUser];
+            if (!u) return;
+            const oldPw = oldPassword.value;
+            const newPw = newPassword.value;
+            const newPw2 = newPassword2.value;
+            if (oldPw !== u.password) { showToast('当前密码不对', 'error'); return; }
+            const s = getPasswordStrength(newPw);
+            if (s === 'too-short') { showToast('新密码太短，至少8位', 'error'); return; }
+            if (s === 'simple') { showToast('新密码太简单，需含字母和数字', 'error'); return; }
+            if (newPw !== newPw2) { showToast('两次输入的新密码不一致', 'error'); return; }
+            if (newPw === u.password) { showToast('新密码不能和旧密码相同', 'warn'); return; }
+            u.password = newPw;
+            if (!saveUsers(users)) { showToast('保存失败', 'error'); return; }
+            oldPassword.value = ''; newPassword.value = ''; newPassword2.value = '';
+            updatePwHint();
+            showToast('密码已修改 ✓', 'success');
+        }
+
+        function bindEvents() {
+            themeToggle.addEventListener('click', toggleTheme);
+
+            devicePage.addEventListener('click', e => {
+                const opt = e.target.closest('.device-option');
+                if (!opt) return;
+                const device = opt.getAttribute('data-device');
+                applyDevice(device);
+                devicePage.classList.add('hide');
+                const session = getSession();
+                const users = getUsers();
+                if (session && session.username && users[session.username]) {
+                    enterApp(session.username);
+                } else {
+                    authPage.classList.remove('hide');
+                    backToDevice.classList.add('show');
+                    switchAuthMode('login');
+                    authUsername.focus();
+                }
+            });
+            backToDevice.addEventListener('click', () => {
+                authPage.classList.add('hide');
+                backToDevice.classList.remove('show');
+                devicePage.classList.remove('hide');
+            });
+
+            tabLogin.addEventListener('click', () => switchAuthMode('login'));
+            tabRegister.addEventListener('click', () => switchAuthMode('register'));
+            authUsername.addEventListener('input', updateFieldChecks);
+            authPassword.addEventListener('input', updateFieldChecks);
+            authUsername.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); authPassword.focus(); } });
+            authPassword.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); authSubmit.click(); } });
+            pwToggle.addEventListener('click', () => {
+                if (authPassword.type === 'password') { authPassword.type = 'text'; pwToggle.textContent = '🙈'; }
+                else { authPassword.type = 'password'; pwToggle.textContent = '👁️'; }
+            });
+            authSubmit.addEventListener('click', () => {
+                if (authMode === 'register') handleRegister();
+                else handleLogin();
+            });
+            errorPopupBtn.addEventListener('click', closeErrorPopup);
+            errorPopupMask.addEventListener('click', e => { if (e.target === errorPopupMask) closeErrorPopup(); });
+
+            userBar.addEventListener('click', e => {
+                if (e.target.closest('#logoutBtn')) return;
+                openProfileModal();
+            });
+            logoutBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                if (confirm('确定退出登录？')) { clearSession(); location.reload(); }
+            });
+
+            profileClose.addEventListener('click', closeProfileModal);
+            profileMask.addEventListener('click', e => { if (e.target === profileMask) closeProfileModal(); });
+            ptabAvatar.addEventListener('click', () => switchProfileTab('avatar'));
+            ptabPassword.addEventListener('click', () => switchProfileTab('password'));
+            ptabDevice.addEventListener('click', () => switchProfileTab('device'));
+            avatarUploadBtn.addEventListener('click', () => avatarFileInput.click());
+            avatarFileInput.addEventListener('change', e => {
+                const f = e.target.files && e.target.files[0];
+                if (f) handleAvatarFile(f);
+                e.target.value = '';
+            });
+            avatarResetBtn.addEventListener('click', resetAvatarToDefault);
+            colorSwatches.addEventListener('click', e => {
+                const sw = e.target.closest('.color-swatch');
+                if (!sw) return;
+                tempAvatarColor = sw.getAttribute('data-color');
+                tempAvatarData = null;
+                renderAvatarPreview();
+                renderColorSwatches();
+            });
+            nicknameInput.addEventListener('input', () => {
+                tempNickname = nicknameInput.value;
+                if (!tempAvatarData) renderAvatarPreview();
+            });
+            avatarSaveBtn.addEventListener('click', saveAvatarProfile);
+            avatarCancelBtn.addEventListener('click', closeProfileModal);
+            avatarPreview.addEventListener('dragover', e => { e.preventDefault(); avatarPreview.classList.add('dragover'); });
+            avatarPreview.addEventListener('dragleave', e => { e.preventDefault(); avatarPreview.classList.remove('dragover'); });
+            avatarPreview.addEventListener('drop', e => {
+                e.preventDefault();
+                avatarPreview.classList.remove('dragover');
+                const f = e.dataTransfer.files && e.dataTransfer.files[0];
+                if (f) handleAvatarFile(f);
+            });
+            newPassword.addEventListener('input', updatePwHint);
+            pwSaveBtn.addEventListener('click', saveNewPassword);
+            pwCancelBtn.addEventListener('click', closeProfileModal);
+
+            switchToDesktopBtn.addEventListener('click', () => {
+                applyDevice('desktop');
+                showToast('已切换到电脑端 💻', 'success');
+                closeProfileModal();
+            });
+            switchToMobileBtn.addEventListener('click', () => {
+                applyDevice('mobile');
+                showToast('已切换到手机端 📱', 'success');
+                closeProfileModal();
+            });
+
+            mobileHamburger.addEventListener('click', openMobileSidebar);
+            mobileSidebarMask.addEventListener('click', closeMobileSidebar);
+
+            addBtn.addEventListener('click', addWord);
+            enInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); cnInput.focus(); } });
+            cnInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); addWord(); } });
+            clearTodayBtn.addEventListener('click', clearCurrentDate);
+            clearViewBtn.addEventListener('click', clearCurrentDate);
+
+            searchInput.addEventListener('input', () => {
+                searchQuery = searchInput.value;
+                searchWrap.classList.toggle('has-text', !!searchQuery);
+                renderCardGrid();
+            });
+            searchClear.addEventListener('click', () => {
+                searchInput.value = ''; searchQuery = '';
+                searchWrap.classList.remove('has-text'); globalSearchHint.classList.remove('show');
+                searchInput.focus();
+                renderCardGrid();
+            });
+
+            dateList.addEventListener('click', e => {
+                const item = e.target.closest('.date-item');
+                if (!item) return;
+                const d = item.getAttribute('data-date');
+                if (searchQuery) {
+                    searchInput.value = ''; searchQuery = '';
+                    searchWrap.classList.remove('has-text'); globalSearchHint.classList.remove('show');
+                }
+                if (d === currentDate) openModal(d);
+                else { currentDate = d; expandedSet.clear(); editingMap.clear(); renderHome(); closeMobileSidebar(); }
+            });
+
+            wrongbookEntry.addEventListener('click', goWrongbook);
+            backFromWrongbookBtn.addEventListener('click', goHome);
+            wrongbookList.addEventListener('click', e => {
+                const speakBtn = e.target.closest('[data-action="speak"]');
+                if (speakBtn) { speakWord(speakBtn.getAttribute('data-word')); return; }
+                const btn = e.target.closest('.wb-clear-btn');
+                if (!btn) return;
+                const en = btn.getAttribute('data-en');
+                if (en && confirm(`把「${en}」从错题本移除？`)) {
+                    removeFromWrongbook(en);
+                    renderWrongbookPage();
+                    renderSidebar();
+                    renderCardGrid();
+                    showToast('已移除', 'info');
+                }
+            });
+
+            optView.addEventListener('click', () => {
+                if (pendingDate) {
+                    currentDate = pendingDate;
+                    expandedSet.clear(); editingMap.clear();
+                    renderHome();
+                }
+                closeModal();
+            });
+            optReview.addEventListener('click', () => {
+                if (pendingDate) openModePicker(pendingDate);
+                closeModal();
+            });
+            modalCancel.addEventListener('click', closeModal);
+            modalMask.addEventListener('click', e => { if (e.target === modalMask) closeModal(); });
+
+            modePickerMask.addEventListener('click', e => {
+                if (e.target === modePickerMask) closeModePicker();
+                const modeCard = e.target.closest('.mode-card');
+                if (modeCard) startReview(modeCard.getAttribute('data-mode'));
+            });
+            modePickerCancel.addEventListener('click', closeModePicker);
+
+            reviewBtn.addEventListener('click', () => openModePicker(currentDate));
+
+            cardGrid.addEventListener('click', e => {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const action = btn.getAttribute('data-action');
+                if (action === 'speak') { speakWord(btn.getAttribute('data-word')); return; }
+                const idxAttr = btn.getAttribute('data-idx');
+                const idx = idxAttr !== null ? parseInt(idxAttr, 10) : NaN;
+                const dateKey = btn.getAttribute('data-date');
+                if (action === 'jump-to-date' && dateKey) {
+                    searchInput.value = ''; searchQuery = '';
+                    searchWrap.classList.remove('has-text'); globalSearchHint.classList.remove('show');
+                    currentDate = dateKey;
+                    expandedSet.clear(); editingMap.clear();
+                    renderHome();
+                    window.scrollTo(0, 0);
+                    return;
+                }
+                if (isNaN(idx)) return;
+                if (action === 'toggle-ext' && dateKey) toggleExt(dateKey, idx);
+                else if (action === 'edit-ext' && dateKey) startEditExt(dateKey, idx);
+                else if (action === 'cancel-edit' && dateKey) cancelEditExt(dateKey, idx);
+                else if (action === 'save-ext' && dateKey) saveExt(dateKey, idx);
+                else if (action === 'delete' && dateKey) deleteWordByIndex(dateKey, idx);
+            });
+            cardGrid.addEventListener('keydown', e => {
+                if (!(e.ctrlKey || e.metaKey) || e.key !== 'Enter') return;
+                const ta = e.target.closest('.ext-edit-area textarea');
+                if (!ta) return;
+                e.preventDefault();
+                const card = ta.closest('.big-card');
+                if (!card) return;
+                const idx = parseInt(card.getAttribute('data-idx'), 10);
+                const dateKey = card.getAttribute('data-date');
+                if (!isNaN(idx) && dateKey) saveExt(dateKey, idx);
+            });
+
+            backFromReviewBtn.addEventListener('click', goHome);
+            reviewList.addEventListener('click', e => {
+                const fc = e.target.closest('.flashcard');
+                if (fc && reviewMode === 'flashcard') {
+                    if (e.target.closest('.audio-btn')) {
+                        speakWord(e.target.closest('.audio-btn').getAttribute('data-word'));
+                        return;
+                    }
+                    flashcardToggle();
+                    return;
+                }
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                const action = btn.getAttribute('data-action');
+                if (action === 'speak') { speakWord(btn.getAttribute('data-word')); return; }
+                const idxAttr = btn.getAttribute('data-idx');
+                const idx = idxAttr !== null ? parseInt(idxAttr, 10) : NaN;
+                if (reviewMode === 'translate') {
+                    if (btn.classList.contains('btn-check') && !isNaN(idx)) checkTranslateAnswer(idx);
+                } else if (reviewMode === 'flashcard') {
+                    if (action === 'fc-prev') flashcardMove(-1);
+                    else if (action === 'fc-next') flashcardMove(1);
+                    else if (action === 'fc-known') flashcardEvaluate(true);
+                    else if (action === 'fc-unknown') flashcardEvaluate(false);
+                } else if (reviewMode === 'choice') {
+                    if (action === 'mc-pick' && !isNaN(idx)) pickChoice(idx, btn.getAttribute('data-opt'));
+                } else if (reviewMode === 'complete') {
+                    if (action === 'cw-check' && !isNaN(idx)) checkCompleteAnswer(idx);
+                }
+            });
+            reviewList.addEventListener('keypress', e => {
+                if (e.key !== 'Enter') return;
+                if (reviewMode === 'translate') {
+                    const input = e.target.closest('.review-input');
+                    if (!input) return;
+                    e.preventDefault();
+                    const idx = parseInt(input.getAttribute('data-idx'), 10);
+                    if (!isNaN(idx)) checkTranslateAnswer(idx);
+                } else if (reviewMode === 'complete') {
+                    const input = e.target.closest('.cw-input');
+                    if (!input) return;
+                    e.preventDefault();
+                    const idx = parseInt(input.getAttribute('data-idx'), 10);
+                    if (!isNaN(idx)) checkCompleteAnswer(idx);
+                }
+            });
+
+            bindTooltipEvents();
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    if (modalMask.classList.contains('show')) closeModal();
+                    if (modePickerMask.classList.contains('show')) closeModePicker();
+                    if (profileMask.classList.contains('show')) closeProfileModal();
+                    if (errorPopupMask.classList.contains('show')) closeErrorPopup();
+                    closeMobileSidebar();
+                }
+                if (e.key === '/' && pageHome.classList.contains('active') && !e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    searchInput.focus();
+                }
+            });
+        }
+
+        function init() {
+            initTheme();
+            bindEvents();
+            if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
+
+            const savedDevice = localStorage.getItem(DEVICE_KEY);
+            if (savedDevice) {
+                applyDevice(savedDevice);
+                devicePage.classList.add('hide');
+                const session = getSession();
+                const users = getUsers();
+                if (session && session.username && users[session.username]) {
+                    authPage.classList.add('hide');
+                    pageHome.style.display = '';
+                    enterApp(session.username);
+                } else {
+                    authPage.classList.remove('hide');
+                    backToDevice.classList.add('show');
+                    switchAuthMode('login');
+                    authUsername.focus();
+                }
+            } else {
+                devicePage.classList.remove('hide');
+                authPage.classList.add('hide');
+                pageHome.style.display = 'none';
+                applyDevice('desktop');
+            }
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+
+        window.addEventListener('error', e => {
+            console.error('Runtime error:', e.message, e.filename, e.lineno);
+        });
+    })();
+    </script>
+</body>
+</html>
